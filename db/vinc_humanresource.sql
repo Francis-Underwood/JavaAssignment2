@@ -46,3 +46,4 @@ INSERT INTO `customer`(`EmployeeId`, `Name`, `PaymentMethod`) SELECT `Id`, 'Impe
 INSERT INTO `customer`(`EmployeeId`, `Name`, `PaymentMethod`) SELECT `Id`, 'Marvin Noronsa', 'Credit card' FROM `employee` WHERE `FirstName` = 'Barry';
 INSERT INTO `customer`(`EmployeeId`, `Name`, `PaymentMethod`) SELECT `Id`, 'Nekron', 'Cash' FROM `employee` WHERE `FirstName` = 'Barry';
 
+
