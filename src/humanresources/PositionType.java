@@ -9,13 +9,13 @@ package humanresources;
  *
  * @author Vincent
  */
-public enum Position {
+public enum PositionType {
     
     SALESPERSON("Salesperson"), OTHERS("Others");
     
     private final String displayName;
     
-    private Position(String value) {
+    private PositionType(String value) {
         this.displayName = value;
     }
 
@@ -23,9 +23,9 @@ public enum Position {
         return this.displayName;
     }
     
-    public static Position fromString(String value) {
+    public static PositionType fromString(String value) {
     if (value != null) {
-      for (Position pos : Position.values()) {
+      for (PositionType pos : PositionType.values()) {
         if (value.equalsIgnoreCase(pos.displayName)) {
           return pos;
         }

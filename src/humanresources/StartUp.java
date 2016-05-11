@@ -4,12 +4,7 @@
  * and open the template in the editor.
  */
 package humanresources;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
-
+import java.util.*;
 /**
  *
  * @author Vincent
@@ -17,73 +12,32 @@ import java.sql.Statement;
 public class StartUp {
     
     static EmployeeFactory empF = new EmployeeFactory();
+    static EmployeeRepository rep; 
 
     public static void main(String[] args) {
+        rep = EmployeeRepository.getRepository();
         
-
-        String url = "jdbc:mysql://localhost:3306/vinc_humanresource";
-        String user = "root";
-        String password = "";
         
-        Connection conn = null;
-        Statement stmt = null;
-        ResultSet rs = null;
-        
-        try
-        {
-            conn = DriverManager.getConnection(url, user, password);
-            stmt  = conn.createStatement();
-            String sql = "SELECT `Id`, `FirstName`, `LastName`, `Position` FROM `employee`";
-        
-            rs = stmt.executeQuery(sql);
-            
-            while (rs.next()) {
-                
-                Employee e = empF.createEmployee(
-                        Position.fromString(rs.getString("Position")),
-                        rs.getInt("Id"), 
-                        rs.getString("FirstName"), 
-                        rs.getString("LastName"));
-                
-                
-                
-/*                
-   System.out.println(
-           rs.getInt("Id") + "\t" + 
-           rs.getString("FirstName") + "\t" + 
-                      rs.getString("LastName")  + "\t" +
-                      rs.getString("Position")
-   );
-*/
-
-System.out.println("n: " + e.getClass().getSimpleName());
-
-}
-        }
-        catch (SQLException ex) {
-		System.out.println("First: "+ex.toString());
-        }
-         finally {
-            try {
-                if (rs != null) {
-                    rs.close();
-                }
-                if (stmt != null) {
-                    stmt.close();
-                }
-                if (conn != null) {
-                    conn.close();
-                }
-            } catch (SQLException ex) {
-            		System.out.println(ex.toString());
-            }
+        // insert
+        Employee yy = empF.createEmployee(PositionType.OTHERS, 0, "Billy", "Batson");
+        int eid = rep.add(yy);
+        if (eid>0) {
+            yy.setEid(eid);
         }
         
-/*
-        for (Position pos : Position.values()) {
-            System.out.print(pos.getDisplayName() + " ");
-        }
-*/
+        ArrayList<Employee> elist = rep.getByPosition(PositionType.OTHERS);
+        System.out.println("Shay: " + elist.size());
+        
+        // update
+        /*
+        //ArrayList<Employee> elist = rep.getByPosition(PositionType.SALESPERSON);     
+        //System.out.println("Shay: " + elist.size());
+        //Employee xx = elist.get(1);
+        //System.out.println("Shay: " + xx.getFname());
+        //xx.setFname("Halle");
+        //rep.update(xx);
+        */
+        
     }
 
 }
