@@ -15,6 +15,8 @@ import java.sql.Statement;
  * @author Vincent
  */
 public class StartUp {
+    
+    static EmployeeFactory empF = new EmployeeFactory();
 
     public static void main(String[] args) {
         
@@ -36,13 +38,26 @@ public class StartUp {
             rs = stmt.executeQuery(sql);
             
             while (rs.next()) {
+                
+                Employee e = empF.createEmployee(
+                        Position.fromString(rs.getString("Position")),
+                        rs.getInt("Id"), 
+                        rs.getString("FirstName"), 
+                        rs.getString("LastName"));
+                
+                
+                
+/*                
    System.out.println(
            rs.getInt("Id") + "\t" + 
            rs.getString("FirstName") + "\t" + 
                       rs.getString("LastName")  + "\t" +
                       rs.getString("Position")
    );
-                    
+*/
+
+System.out.println("n: " + e.getClass().getSimpleName());
+
 }
         }
         catch (SQLException ex) {

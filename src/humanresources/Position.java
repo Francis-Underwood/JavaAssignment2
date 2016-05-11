@@ -22,4 +22,15 @@ public enum Position {
     public String getDisplayName() {
         return this.displayName;
     }
+    
+    public static Position fromString(String value) {
+    if (value != null) {
+      for (Position pos : Position.values()) {
+        if (value.equalsIgnoreCase(pos.displayName)) {
+          return pos;
+        }
+      }
+    }
+    return null;
+  }
 }
