@@ -4,7 +4,7 @@
  * and open the template in the editor.
  */
 package humanresources;
-import java.lang.*;
+
 /**
  *
  * @author Vincent

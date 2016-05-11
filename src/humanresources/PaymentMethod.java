@@ -11,4 +11,15 @@ package humanresources;
  */
 public enum PaymentMethod {
     
+    CASH("Cash"), CREDITCARD("Credit card");
+    
+    private final String displayName;
+    
+    private PaymentMethod(String value) {
+        this.displayName = value;
+    }
+
+    public String getDisplayName() {
+        return this.displayName;
+    }
 }

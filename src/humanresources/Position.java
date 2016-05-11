@@ -11,7 +11,7 @@ package humanresources;
  */
 public enum Position {
     
-    SALESPERSON("Salesperson"), OTHERSTUFF("Other stuff");
+    SALESPERSON("Salesperson"), OTHERS("Others");
     
     private final String displayName;
     
