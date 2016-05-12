@@ -25,7 +25,8 @@ public class EmployeeRepository {
         
         try (Connection conn = DriverManager.getConnection(this.url, this.user, this.password);
                 Statement stmt = conn.createStatement();
-                ResultSet rs = stmt.executeQuery(sql)) {
+                ResultSet rs = stmt.executeQuery(sql)) 
+        {
             while (rs.next()) {
                 Employee e = empFactory.createEmployee(
                         PositionType.fromString(rs.getString("Position")),
@@ -65,22 +66,20 @@ public class EmployeeRepository {
         return employees;
     }
     
-    
     public boolean update(Employee empy) {
         String sql = "UPDATE `employee` "
                 + "SET `FirstName` = ?, "
                  + "`LastName` = ? "
-                + "WHERE Id = ?";
+                + "WHERE `Id` = ?";
         
         try (Connection conn = DriverManager.getConnection(this.url, this.user, this.password);
                 PreparedStatement pstmt = conn.prepareStatement(sql))
         {
             String fName = empy.getFname();
             String lName = empy.getLname();
-            int id = empy.getEid();
             pstmt.setString(1, fName);
             pstmt.setString(2, lName);
-            pstmt.setInt(3, id);
+            pstmt.setInt(3, empy.getEid());
             
             int rowAffected = pstmt.executeUpdate();
             System.out.println(String.format("Row updated %d", rowAffected));
@@ -96,7 +95,6 @@ public class EmployeeRepository {
             return false;
         }
     }
-    
     
     public int add(Employee empy) {
         String sql = "INSERT INTO `employee`(`FirstName`, `LastName`, `Position`) "
@@ -126,40 +124,46 @@ public class EmployeeRepository {
             System.out.println(ex.getMessage());
         } finally {
             try {
-                if (rs != null)  rs.close();
+                if (rs != null)  {
+                    rs.close();
+                }
             } 
-            catch (SQLException e) {
-                System.out.println(e.getMessage());
+            catch (SQLException ex) {
+                System.out.println(ex.getMessage());
             }
         }
         
         return candidateId;
     }
     
-    
-    
-    
-/*	
-	public Employee select(String key, EntityService<String, Employee> db) {
-		return db.get(key);
-	}
-
+    public boolean delete(int eid) {
+        String sql = "DELETE FROM `employee` "
+            + "WHERE `Id` = ?";
+        try (Connection conn = DriverManager.getConnection(this.url, this.user, this.password);
+                PreparedStatement pstmt = conn.prepareStatement(sql))
+        {
+            pstmt.setInt(1, eid);
+            int rowsDeleted = pstmt.executeUpdate();
+            if (rowsDeleted > 0) {
+                return true;
+            }
+            else {
+                return false;
+            }
+        }
+        catch (SQLException ex) {
+            System.out.println(ex.getMessage());
+            return false;
+        }
+    }
 	
-	
-	public void delete(String key, EntityService<String, Employee> db) {
-		db.delete(key);
-	}
-	
-	public boolean containsKey(String key, EntityService<String, Employee> db) {
-		return db.containsKey(key);
-	}
-*/	
-	public static EmployeeRepository getRepository() {
-		if (null==employeeRepository) {
-			employeeRepository = new EmployeeRepository();
-		}
-		else {}
-		return employeeRepository;
-	}
+    public static EmployeeRepository getRepository() {
+        if (null == employeeRepository) {
+            employeeRepository = new EmployeeRepository();
+        } 
+        else {
+        }
+        return employeeRepository;
+    }
 	
 }

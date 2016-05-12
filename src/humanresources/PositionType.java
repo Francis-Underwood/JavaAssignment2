@@ -10,11 +10,11 @@ package humanresources;
  * @author Vincent
  */
 public enum PositionType {
-    
+
     SALESPERSON("Salesperson"), OTHERS("Others");
-    
+
     private final String displayName;
-    
+
     private PositionType(String value) {
         this.displayName = value;
     }
@@ -22,15 +22,15 @@ public enum PositionType {
     public String getDisplayName() {
         return this.displayName;
     }
-    
+
     public static PositionType fromString(String value) {
-    if (value != null) {
-      for (PositionType pos : PositionType.values()) {
-        if (value.equalsIgnoreCase(pos.displayName)) {
-          return pos;
+        if (value != null) {
+            for (PositionType pos : PositionType.values()) {
+                if (value.equalsIgnoreCase(pos.displayName)) {
+                    return pos;
+                }
+            }
         }
-      }
+        return null;
     }
-    return null;
-  }
 }

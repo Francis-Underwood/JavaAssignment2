@@ -9,17 +9,29 @@ package humanresources;
  *
  * @author Vincent
  */
-public enum PaymentMethod {
+public enum PaymentMethodOption {
     
     CASH("Cash"), CREDITCARD("Credit card");
     
     private final String displayName;
     
-    private PaymentMethod(String value) {
+    private PaymentMethodOption(String value) {
         this.displayName = value;
     }
 
     public String getDisplayName() {
         return this.displayName;
     }
+    
+    public static PaymentMethodOption fromString(String value) {
+        if (value != null) {
+            for (PaymentMethodOption pto : PaymentMethodOption.values()) {
+                if (value.equalsIgnoreCase(pto.displayName)) {
+                    return pto;
+                }
+            }
+        }
+        return null;
+    }
+    
 }

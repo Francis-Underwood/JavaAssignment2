@@ -17,16 +17,23 @@ public class StartUp {
     public static void main(String[] args) {
         rep = EmployeeRepository.getRepository();
         
+        // delete
+        /*
+        boolean res = rep.delete(7);
+        System.out.println("Shay: " + res);
+        */
+        
         
         // insert
+        /*
         Employee yy = empF.createEmployee(PositionType.OTHERS, 0, "Billy", "Batson");
         int eid = rep.add(yy);
         if (eid>0) {
             yy.setEid(eid);
         }
-        
         ArrayList<Employee> elist = rep.getByPosition(PositionType.OTHERS);
         System.out.println("Shay: " + elist.size());
+        */
         
         // update
         /*
