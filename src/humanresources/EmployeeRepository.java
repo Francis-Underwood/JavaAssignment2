@@ -14,10 +14,13 @@ public class EmployeeRepository {
     private String user = "root";
     private String password = "";
     private EmployeeFactory empFactory = new EmployeeFactory();
+    private CustomerRepository custRepty;
 
     private static EmployeeRepository employeeRepository;	//singleton pattern
 
-    private EmployeeRepository() {}
+    private EmployeeRepository() {
+        this.custRepty = CustomerRepository.getRepository();
+    }
 
     public ArrayList<Employee> all() {
         String sql = "SELECT `Id`, `FirstName`, `LastName`, `Position` FROM `employee`";
@@ -75,10 +78,8 @@ public class EmployeeRepository {
         try (Connection conn = DriverManager.getConnection(this.url, this.user, this.password);
                 PreparedStatement pstmt = conn.prepareStatement(sql))
         {
-            String fName = empy.getFname();
-            String lName = empy.getLname();
-            pstmt.setString(1, fName);
-            pstmt.setString(2, lName);
+            pstmt.setString(1, empy.getFname());
+            pstmt.setString(2, empy.getLname());
             pstmt.setInt(3, empy.getEid());
             
             int rowAffected = pstmt.executeUpdate();
@@ -137,22 +138,29 @@ public class EmployeeRepository {
     }
     
     public boolean delete(int eid) {
-        String sql = "DELETE FROM `employee` "
-            + "WHERE `Id` = ?";
-        try (Connection conn = DriverManager.getConnection(this.url, this.user, this.password);
+        String sql = "DELETE FROM `employee` WHERE `Id` = ?";
+        
+        boolean res = this.custRepty.deleteByEmployeeId(eid);
+        
+        if (res) {
+            try (Connection conn = DriverManager.getConnection(this.url, this.user, this.password);
                 PreparedStatement pstmt = conn.prepareStatement(sql))
-        {
-            pstmt.setInt(1, eid);
-            int rowsDeleted = pstmt.executeUpdate();
-            if (rowsDeleted > 0) {
-                return true;
+            {
+                pstmt.setInt(1, eid);
+                int rowsDeleted = pstmt.executeUpdate();
+                if (rowsDeleted > 0) {
+                    return true;
+                }
+                else {
+                    return false;
+                }
             }
-            else {
+            catch (SQLException ex) {
+                System.out.println(ex.getMessage());
                 return false;
             }
         }
-        catch (SQLException ex) {
-            System.out.println(ex.getMessage());
+        else {
             return false;
         }
     }

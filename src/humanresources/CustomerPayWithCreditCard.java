@@ -2,8 +2,9 @@ package humanresources;
 
 public class CustomerPayWithCreditCard extends Customer {
 
-    public CustomerPayWithCreditCard(int cid, String cname, PaymentMethodOption payMedOpt) {
-        super(cid, cname, payMedOpt);
+    public CustomerPayWithCreditCard(int cid, int eid, String cname, 
+                            String aname, PaymentMethodOption payMedOpt) {
+        super(cid, eid, cname, aname, payMedOpt);
     }
 
     public void Pay() {
