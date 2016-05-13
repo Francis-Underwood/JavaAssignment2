@@ -9,6 +9,7 @@ import java.util.*;
 import javax.swing.*;
 import java.awt.*;
 import humanresources.businessdomain.*;
+import humanresources.views.*;
 
 /**
  *
@@ -34,6 +35,8 @@ public class StartUp {
     private static JMenu menuCustomer = new JMenu("Customers");
     private static JMenuItem mItemAllCustm = new JMenuItem("All Customers");
 
+    private static EmployeeListPanel empPanl;
+
     public static void main(String[] args) {
 
         crep = CustomerRepository.getRepository();
@@ -54,11 +57,14 @@ public class StartUp {
         menuEmployee.add(mItemAllSales);
         menuEmployee.add(mItemAllOtherEmpy);
         menuBar.add(menuEmployee);
-        
+
         menuCustomer.add(mItemAllCustm);
         menuBar.add(menuCustomer);
-        
+
         frame.setJMenuBar(menuBar);
+
+        empPanl = new EmployeeListPanel("All Employees", rep.all());
+        con.add(empPanl, BorderLayout.WEST);
 
         // set style
         try {
