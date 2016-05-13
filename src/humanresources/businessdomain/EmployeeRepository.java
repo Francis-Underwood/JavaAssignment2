@@ -1,4 +1,4 @@
-package humanresources;
+package humanresources.businessdomain;
 
 import java.util.*;
 import java.sql.Connection;

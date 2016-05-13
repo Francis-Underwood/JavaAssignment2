@@ -4,90 +4,80 @@
  * and open the template in the editor.
  */
 package humanresources;
+
 import java.util.*;
+import javax.swing.*;
+import java.awt.*;
+import humanresources.businessdomain.*;
+
 /**
  *
  * @author Vincent
  */
 public class StartUp {
-    
+
     static EmployeeFactory empF = new EmployeeFactory();
-    static EmployeeRepository rep; 
-    
+    static EmployeeRepository rep;
+
     static CustomerFactory cusF = new CustomerFactory();
-    static CustomerRepository crep; 
+    static CustomerRepository crep;
+
+    private final static String feelNLook = "com.sun.java.swing.plaf.windows.WindowsLookAndFeel";
+
+    private static JFrame frame = new JFrame();
+    private static Container con;
+    private static JMenuBar menuBar = new JMenuBar();
+    private static JMenu menuEmployee = new JMenu("Employees");
+    private static JMenuItem mItemAllEmpye = new JMenuItem("All Employees");
+    private static JMenuItem mItemAllSales = new JMenuItem("All Sales");
+    private static JMenuItem mItemAllOtherEmpy = new JMenuItem("All Other Employees");
+    private static JMenu menuCustomer = new JMenu("Customers");
+    private static JMenuItem mItemAllCustm = new JMenuItem("All Customers");
 
     public static void main(String[] args) {
-        
+
         crep = CustomerRepository.getRepository();
-        
-        
-        // delete
-        /*
-        boolean res = crep.delete(17);
-        System.out.println("Shay: " + res);
-        */
-        
-        // insert
-        /*
-        Customer cd = cusF.createCustomer(0, 4, "Glider", "", PaymentMethodOption.CASH);
-        crep.add(cd);
-        */
-        
-        // update
-        /*
-        ArrayList<Customer> clist = crep.getByEmployeeId(4);
-        Customer cc = clist.get(1);
-        cc.setCname("Magental");
-        crep.update(cc);
-        */
-        
-        
-        
-        // select
-        /*
-        //ArrayList<Customer> clist = crep.all();
-        ArrayList<Customer> clist = crep.getByEmployeeId(4);
-        System.out.println("Shay: " + clist.size());
-        
-        for (Customer c : clist) {
-            System.out.println("Customer name: " + c.getCname() + "\t\t\t" + "Agent name: " + c.getAgentName());
-            //System.out.println();
-        }
-        */
-        
-        
-        
         rep = EmployeeRepository.getRepository();
+
+        /**
+         * ***********************************************
+         * set up the visual components
+         * ***********************************************
+         */
+        // root container
+        frame.setTitle("Human Resource Management System");
+        frame.setBounds(120, 60, 900, 600);
+        con = frame.getContentPane();
+
+        ///////////////////////////////////
+        menuEmployee.add(mItemAllEmpye);
+        menuEmployee.add(mItemAllSales);
+        menuEmployee.add(mItemAllOtherEmpy);
+        menuBar.add(menuEmployee);
         
-        // delete
-        /*
-        boolean res = rep.delete(3);
-        System.out.println("Shay: " + res);
-        */
+        menuCustomer.add(mItemAllCustm);
+        menuBar.add(menuCustomer);
         
-        
-        // insert
-        /*
-        Employee yy = empF.createEmployee(PositionType.OTHERS, 0, "Billy", "Batson");
-        int eid = rep.add(yy);
-        if (eid>0) {
-            yy.setEid(eid);
+        frame.setJMenuBar(menuBar);
+
+        // set style
+        try {
+            UIManager.setLookAndFeel(feelNLook);
+            SwingUtilities.updateComponentTreeUI(frame);
+        } catch (UnsupportedLookAndFeelException ex1) {
+            System.err.println("Unsupported LookAndFeel: " + feelNLook);
+        } catch (ClassNotFoundException ex2) {
+            System.err.println("LookAndFeel class not found: " + feelNLook);
+        } catch (InstantiationException ex3) {
+            System.err.println("Could not load LookAndFeel: " + feelNLook);
+        } catch (IllegalAccessException ex4) {
+            System.err.println("Cannot use LookAndFeel: " + feelNLook);
         }
-        ArrayList<Employee> elist = rep.getByPosition(PositionType.OTHERS);
-        System.out.println("Shay: " + elist.size());
-        */
-        
-        // update
-        /*
-        //ArrayList<Employee> elist = rep.getByPosition(PositionType.SALESPERSON);     
-        //System.out.println("Shay: " + elist.size());
-        //Employee xx = elist.get(1);
-        //System.out.println("Shay: " + xx.getFname());
-        //xx.setFname("Halle");
-        //rep.update(xx);
-        */
-        
+
+        UIManager.put("OptionPane.okButtonText", "OK");
+        UIManager.put("OptionPane.cancelButtonText", "Cancel");
+
+        frame.setVisible(true);
     }
 
 }

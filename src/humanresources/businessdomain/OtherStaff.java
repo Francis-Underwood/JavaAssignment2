@@ -1,4 +1,4 @@
-package humanresources;
+package humanresources.businessdomain;
 
 public class OtherStaff extends Employee {
     public OtherStaff(int eid, String fname, String lname, PositionType pos) {

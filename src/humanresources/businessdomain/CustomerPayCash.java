@@ -1,4 +1,4 @@
-package humanresources;
+package humanresources.businessdomain;
 
 public class CustomerPayCash extends Customer {
 

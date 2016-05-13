@@ -1,4 +1,4 @@
-package humanresources;
+package humanresources.businessdomain;
 
 //factory pattern
 public final class CustomerFactory {
