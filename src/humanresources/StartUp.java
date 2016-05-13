@@ -8,6 +8,7 @@ package humanresources;
 import java.util.*;
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.*;
 import humanresources.businessdomain.*;
 import humanresources.views.*;
 
@@ -24,6 +25,9 @@ public class StartUp {
     static CustomerRepository crep;
 
     private final static String feelNLook = "com.sun.java.swing.plaf.windows.WindowsLookAndFeel";
+    private static String panelStatus = "empy";  // empy || cust
+    private static String empyStatus = "all"; // all || sales || others
+    private static String custStatus = "all"; // all || agent
 
     private static JFrame frame = new JFrame();
     private static Container con;
@@ -35,12 +39,67 @@ public class StartUp {
     private static JMenu menuCustomer = new JMenu("Customers");
     private static JMenuItem mItemAllCustm = new JMenuItem("All Customers");
 
+    // listeners
+    private static ActionListener mItemAllEmpyeLstn;
+    private static ActionListener mItemAllSalesLstn;
+    private static ActionListener mItemAllOtherEmpyLstn;
+    private static ActionListener mItemAllCustmLstn;
+
     private static EmployeeListPanel empPanl;
+    //private static EmployeeListPanel empPanl;
 
     public static void main(String[] args) {
 
         crep = CustomerRepository.getRepository();
         rep = EmployeeRepository.getRepository();
+
+        /**
+         * ***********************************************
+         * create listeners
+	 ************************************************
+         */
+        
+        // menu listeners
+        mItemAllEmpyeLstn = new ActionListener() {
+            public void actionPerformed(ActionEvent aevt) {
+                if ("empy" == panelStatus) {
+                    if ("all" == empyStatus) {
+                        // nothing
+                        return;
+                    }
+                    else if ("sales" == empyStatus) {
+                        goToEmployeeListPanel("All Employees", "all");
+                    }
+                    else {
+                        goToEmployeeListPanel("All Employees", "all");
+                    }
+                }
+                else {
+                    goToEmployeeListPanel("All Employees", "all");
+                }
+                
+                System.out.println("User's choice: ");
+            }
+        };
+        
+        mItemAllSalesLstn = new ActionListener() {
+            public void actionPerformed(ActionEvent aevt) {
+                System.out.println("User's choice: ");
+            }
+        };
+        
+        mItemAllOtherEmpyLstn = new ActionListener() {
+            public void actionPerformed(ActionEvent aevt) {
+                System.out.println("User's choice: ");
+            }
+        };
+        
+        mItemAllCustmLstn = new ActionListener() {
+            public void actionPerformed(ActionEvent aevt) {
+                System.out.println("User's choice: ");
+            }
+        };
+        
 
         /**
          * ***********************************************
@@ -53,17 +112,25 @@ public class StartUp {
         con = frame.getContentPane();
 
         ///////////////////////////////////
+        mItemAllEmpye.addActionListener(mItemAllEmpyeLstn);
         menuEmployee.add(mItemAllEmpye);
+        
+        mItemAllSales.addActionListener(mItemAllSalesLstn);
         menuEmployee.add(mItemAllSales);
+        
+        mItemAllOtherEmpy.addActionListener(mItemAllOtherEmpyLstn);
         menuEmployee.add(mItemAllOtherEmpy);
+        
         menuBar.add(menuEmployee);
 
+        mItemAllCustm.addActionListener(mItemAllCustmLstn);
         menuCustomer.add(mItemAllCustm);
+        
         menuBar.add(menuCustomer);
 
         frame.setJMenuBar(menuBar);
 
-        empPanl = new EmployeeListPanel("All Employees", rep.all());
+        empPanl = new EmployeeListPanel("All Employees", "all");
         con.add(empPanl, BorderLayout.WEST);
 
         // set style
@@ -85,5 +152,29 @@ public class StartUp {
 
         frame.setVisible(true);
     }
+    
+    private static void goToEmployeeListPanel(String title, String empyStatus) {
+        con.remove(empPanl);
+        //con.
+        
+        empPanl = null;
+        
+        //custPanl = new CustomerPanel(empy);
+        //custPanl.addSaveEmployeeListener(saveEmpyLstn);
+        //con.add(custPanl, BorderLayout.WEST);
+        //goBackBtn.setEnabled(true);
+        
+        empPanl = new EmployeeListPanel(title, empyStatus);
+        con.add(empPanl, BorderLayout.WEST);
+        
+        
+        frame.revalidate();
+        frame.repaint();
+    }
+    
+    
+    
+    
+    
 
 }

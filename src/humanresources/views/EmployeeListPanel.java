@@ -28,17 +28,39 @@ public class EmployeeListPanel extends JPanel implements ActionListener {
     private JButton editBtn = new JButton("Edit");
     private JButton deleteBtn = new JButton("Delete");
     private JButton viewCustmBtn = new JButton("View Customers");
+    private String status = "all"; // all || sales || others
+    
+    private EmployeeFactory empFacty = new EmployeeFactory();
+    private EmployeeRepository empyReposty;
 
-    public EmployeeListPanel(String title, ArrayList<Employee> empList) {
-        this.empList = empList;
+    public EmployeeListPanel(String title, String status) {
+        
+        this.status = status;
+        
+        this.empyReposty = EmployeeRepository.getRepository();
+        
+        
+        switch (this.status) {
+            case "all":
+            defaut:
+                this.empList = this.empyReposty.all();
+                break;
+            case "sales":
+                this.empList = this.empyReposty.getByPosition(PositionType.SALESPERSON);
+                break;
+            case "others":  
+                this.empList = this.empyReposty.getByPosition(PositionType.OTHERS);
+                break;
+        }
+      
         this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 
-        this.employeeModel = new EmployeeListPanelModel(empList);
+        this.employeeModel = new EmployeeListPanelModel(this.empList);
         this.titleLbl = new JLabel(title);
 
         this.titleLbl.setFont(new Font("Helvetica", Font.PLAIN, 24));
         this.titleLbl.setAlignmentX(Component.LEFT_ALIGNMENT);
-        add(this.titleLbl);
+        this.add(this.titleLbl);
 
         this.employeeGrid = new JTable(employeeModel);
         // single row selection
