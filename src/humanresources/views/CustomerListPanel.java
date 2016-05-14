@@ -30,7 +30,7 @@ public class CustomerListPanel extends JPanel implements ActionListener {
     
     // component
     private JScrollPane scrollPane;
-    private JTable employeeGrid;
+    private JTable customerGrid;
     private JLabel titleLbl;
     private CustomerListPanelModel customerModel;
     
@@ -124,14 +124,14 @@ public class CustomerListPanel extends JPanel implements ActionListener {
         this.add(this.titleLbl);
         
         // customer list
-        this.employeeGrid = new JTable(this.customerModel);
-        this.employeeGrid.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        this.employeeGrid.setPreferredScrollableViewportSize(new Dimension(600, 100));
+        this.customerGrid = new JTable(this.customerModel);
+        this.customerGrid.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        this.customerGrid.setPreferredScrollableViewportSize(new Dimension(600, 100));
         
         this.scrollPane = new JScrollPane();
         this.scrollPane.setPreferredSize(new Dimension(800, 220));
         this.scrollPane.setMaximumSize(new Dimension(800, 220));
-        this.scrollPane.getViewport().add(this.employeeGrid);
+        this.scrollPane.getViewport().add(this.customerGrid);
         this.scrollPane.setAlignmentX(Component.LEFT_ALIGNMENT);
         this.add(scrollPane);
 		
@@ -163,7 +163,12 @@ public class CustomerListPanel extends JPanel implements ActionListener {
         
         if ("Create" == atnEvt.getActionCommand()) {
             this.rowInd = -1;
-            //resetEmpyEditCtrls();
+            resetCustEditCtrls();
+            
+            if ("agent" == this.state) {
+                this.managerCombox.setEnabled(false);
+            }
+            
             int option = JOptionPane.showConfirmDialog(null, this.customerEditCtrls, 
                     "Customer Info", JOptionPane.OK_CANCEL_OPTION);
             if (option == JOptionPane.OK_OPTION) {
@@ -183,12 +188,59 @@ public class CustomerListPanel extends JPanel implements ActionListener {
                 }
             } 
             else {}
-            //resetEmpyEditCtrls();
+            resetCustEditCtrls();
+        }
+        else if ("Edit" == atnEvt.getActionCommand()) {
+            this.rowInd = this.customerGrid.getSelectedRow();
+            if (this.rowInd > -1) {
+                Customer c = this.custList.get(this.rowInd); // should be synchronized with table model's list
+                this.custNameTxtFld.setText(c.getCname());
+                this.payMethdCombox.setSelectedItem(c.getPaymentMethod().getDisplayName());
+                this.payMethdCombox.setEnabled(false);
+                
+                ComboBoxModel model = this.managerCombox.getModel();
+                int size = model.getSize();
+                for(int i=0; i<size; i++) {
+                    VinComboItem element = (VinComboItem)model.getElementAt(i);
+                    if (element.getValue() == c.getEid()) {
+                        this.managerCombox.setSelectedItem(element);
+                    }
+                }
+                
+                
+                //System.out.println("type: " + element.getClass().getSimpleName());
+                
+                //System.out.println("size: " + size);
+                
+                //this.managerCombox.setSelectedItem(c.getAgentName());
+                this.managerCombox.setEnabled(false);
+
+                
+                int option = JOptionPane.showConfirmDialog(null, customerEditCtrls, "Customer Info", JOptionPane.OK_CANCEL_OPTION);
+                if (option == JOptionPane.OK_OPTION) {
+                    customerModel.setValueAt(this.custNameTxtFld.getText(), this.rowInd, 1);
+                } else {
+                }
+                this.rowInd = -1;
+                resetCustEditCtrls();
+            }
         }
         
         
         
+        
+        
     }
+    
+    
+    
+    private void resetCustEditCtrls() {
+        this.custNameTxtFld.setText("");
+        this.custNameTxtFld.setEditable(true);
+        this.payMethdCombox.setEnabled(true);
+        this.managerCombox.setEnabled(true);
+    }
+
     
     
 }
