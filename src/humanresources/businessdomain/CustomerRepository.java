@@ -183,7 +183,7 @@ public class CustomerRepository {
                 return true;
             }
             else {
-                return false;
+                return true;
             }
         }
         catch (SQLException ex) {

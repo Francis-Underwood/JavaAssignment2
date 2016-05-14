@@ -21,6 +21,29 @@ public class EmployeeRepository {
     private EmployeeRepository() {
         this.custRepty = CustomerRepository.getRepository();
     }
+    
+    public Employee get(int eid) {
+        String sql = "SELECT `Id`, `FirstName`, `LastName`, `Position` " + 
+                    "FROM `employee` " + 
+                    "WHERE `Id` = " + eid;
+        Employee empy = null;
+        try (Connection conn = DriverManager.getConnection(this.url, this.user, this.password);
+                Statement stmt = conn.createStatement();
+                ResultSet rs = stmt.executeQuery(sql)) {
+            if (rs.next()) {
+                empy = empFactory.createEmployee(
+                        PositionType.fromString(rs.getString("Position")),
+                        rs.getInt("Id"),
+                        rs.getString("FirstName"),
+                        rs.getString("LastName"));
+            }
+            
+        }
+         catch (SQLException ex) {
+            System.out.println("First: " + ex.toString());
+        }
+        return empy;
+    }
 
     public ArrayList<Employee> all() {
         String sql = "SELECT `Id`, `FirstName`, `LastName`, `Position` FROM `employee`";
@@ -123,7 +146,8 @@ public class EmployeeRepository {
         }
         catch (SQLException ex) {
             System.out.println(ex.getMessage());
-        } finally {
+        } 
+        finally {
             try {
                 if (rs != null)  {
                     rs.close();
@@ -131,6 +155,7 @@ public class EmployeeRepository {
             } 
             catch (SQLException ex) {
                 System.out.println(ex.getMessage());
+                return candidateId;
             }
         }
         

@@ -61,5 +61,34 @@ public class EmployeeListPanelModel extends AbstractTableModel {
         }
         return "";
     }
+    
+    @Override
+    public void setValueAt(Object val, int row, int col) {
+        if (row < 0 || row >= getRowCount()) {
+            return;
+        }
+        
+        /*
+Employee emp = this.empList.get(row);
+        switch (col) {
+            case 1:
+                emp.setFname(val.toString());
+                break;
+            case 2:
+                emp.setLname(val.toString());
+                break;
+        }
+        */
+        
+        this.fireTableCellUpdated(row, col);
+    }
+    
+    public void removeRow(int index) {
+        this.fireTableRowsDeleted(index, index);
+    }
+    
+    public void addRow(Employee emp) {
+        this.fireTableRowsInserted(empList.size() - 1, empList.size() - 1);
+    }
 
 }
