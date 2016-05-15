@@ -63,7 +63,22 @@ public class CustomerListPanelModel extends AbstractTableModel  {
         return "";
     }
     
-    
+    @Override
+    public void setValueAt(Object val, int row, int col) {
+        if (row < 0 || row >= getRowCount()) {
+            return;
+        }
+/*        
+        Customer c = this.custList.get(row);
+        switch (col) {
+            case 1:
+                c.setCname(val.toString());
+        }
+*/
+        this.fireTableCellUpdated(row, col);
+    }
+        
+        
     public void removeRow(int index) {
         //custList.remove(index);
         this.fireTableRowsDeleted(index, index);

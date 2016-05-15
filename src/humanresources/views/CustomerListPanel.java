@@ -57,9 +57,8 @@ public class CustomerListPanel extends JPanel implements ActionListener {
                 defaut:
                 this.custList = this.custReposty.all();
                 this.empyList = this.empyReposty.getByPosition(PositionType.SALESPERSON);
-                
+                // populate manager combo box
                 ArrayList<VinComboItem> combItems = new ArrayList<VinComboItem>();
-                
                 for (Employee empy : this.empyList) {
                     VinComboItem tempItem 
                             = new VinComboItem(
@@ -68,7 +67,6 @@ public class CustomerListPanel extends JPanel implements ActionListener {
                             );
                     combItems.add(tempItem);
                 }
-                
                 this.managerCombox = new JComboBox(combItems.toArray());
                 
                 break;
@@ -101,11 +99,11 @@ public class CustomerListPanel extends JPanel implements ActionListener {
                 break;
         }
         
+        // populate payment method combo box
         ArrayList<String> pMedOptItems = new ArrayList<String>();
         for (PaymentMethodOption pmo : PaymentMethodOption.values()) {
             pMedOptItems.add(pmo.getDisplayName());
         }
-        
         this.payMethdCombox = new JComboBox(pMedOptItems.toArray());
         
         this.customerEditCtrls
@@ -129,8 +127,8 @@ public class CustomerListPanel extends JPanel implements ActionListener {
         this.customerGrid.setPreferredScrollableViewportSize(new Dimension(600, 100));
         
         this.scrollPane = new JScrollPane();
-        this.scrollPane.setPreferredSize(new Dimension(800, 220));
-        this.scrollPane.setMaximumSize(new Dimension(800, 220));
+        this.scrollPane.setPreferredSize(new Dimension(800, 420));
+        this.scrollPane.setMaximumSize(new Dimension(800, 420));
         this.scrollPane.getViewport().add(this.customerGrid);
         this.scrollPane.setAlignmentX(Component.LEFT_ALIGNMENT);
         this.add(scrollPane);
@@ -206,26 +204,41 @@ public class CustomerListPanel extends JPanel implements ActionListener {
                         this.managerCombox.setSelectedItem(element);
                     }
                 }
-                
-                
-                //System.out.println("type: " + element.getClass().getSimpleName());
-                
-                //System.out.println("size: " + size);
-                
-                //this.managerCombox.setSelectedItem(c.getAgentName());
                 this.managerCombox.setEnabled(false);
-
                 
-                int option = JOptionPane.showConfirmDialog(null, customerEditCtrls, "Customer Info", JOptionPane.OK_CANCEL_OPTION);
+                int option = JOptionPane.showConfirmDialog(
+                        null,
+                        customerEditCtrls,
+                        "Customer Info",
+                        JOptionPane.OK_CANCEL_OPTION
+                );
+                
                 if (option == JOptionPane.OK_OPTION) {
-                    customerModel.setValueAt(this.custNameTxtFld.getText(), this.rowInd, 1);
+                    c.setCname(this.custNameTxtFld.getText());
+                    
+                    if (this.custReposty.update(c)) {
+                        this.customerModel.setValueAt(this.custNameTxtFld.getText(), this.rowInd, 1);
+                    }
+                    
                 } else {
                 }
                 this.rowInd = -1;
                 resetCustEditCtrls();
             }
         }
-        
+        else if ("Delete" == atnEvt.getActionCommand()) {
+            this.rowInd = this.customerGrid.getSelectedRow();
+            if (this.rowInd > -1) {
+                
+                Customer cust = this.custList.get(this.rowInd);
+                if (this.custReposty.delete(cust.getCid())) {
+                    this.custList.remove(this.rowInd);
+                    this.customerModel.removeRow(this.rowInd);
+                }
+                
+                this.rowInd = -1;
+            }
+        }
         
         
         

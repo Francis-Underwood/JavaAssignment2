@@ -44,13 +44,8 @@ public class EmployeeListPanel extends JPanel implements ActionListener {
     // employee property panel
     private JTextField empFNameTxtFld = new JTextField();
     private JTextField empLNameTxtFld = new JTextField();
-    private JComboBox<String> empPosTypeCombox
-            = new JComboBox<String>(
-                    new String[]{
-                        PositionType.SALESPERSON.getDisplayName(),
-                        PositionType.OTHERS.getDisplayName()
-                    }
-            );
+    private JComboBox empPosTypeCombox;
+    
     private Object[] employeeEditCtrls = {
                     "First name:", empFNameTxtFld,
                     "Last name:", empLNameTxtFld,
@@ -75,6 +70,14 @@ public class EmployeeListPanel extends JPanel implements ActionListener {
                 this.empList = this.empyReposty.getByPosition(PositionType.OTHERS);
                 break;
         }
+        
+        // populate position type combo box
+        ArrayList<String> posTypeItems = new ArrayList<String>();
+        for (PositionType pt : PositionType.values()) {
+            posTypeItems.add(pt.getDisplayName());
+        }
+        this.empPosTypeCombox = new JComboBox(posTypeItems.toArray());
+        
       
         this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 
@@ -91,8 +94,8 @@ public class EmployeeListPanel extends JPanel implements ActionListener {
         this.employeeGrid.setPreferredScrollableViewportSize(new Dimension(600, 200));
         
         this.scrollPane = new JScrollPane();
-        this.scrollPane.setPreferredSize(new Dimension(800, 300));
-        this.scrollPane.setMaximumSize(new Dimension(800, 300));
+        this.scrollPane.setPreferredSize(new Dimension(800, 420));
+        this.scrollPane.setMaximumSize(new Dimension(800, 420));
         this.scrollPane.getViewport().add(this.employeeGrid);
         this.scrollPane.setAlignmentX(Component.LEFT_ALIGNMENT);
         this.add(scrollPane);

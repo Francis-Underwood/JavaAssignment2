@@ -159,11 +159,15 @@ public class StartUp {
     }
     
     private static void goToEmployeeListPanel(String title, String empyStatus) {
-        con.remove(empPanl);
-        //con.
         
-        empPanl = null;
-        
+        if (null != empPanl) {
+            con.remove(empPanl);
+            empPanl = null;
+        }
+        if (null != custPanl) {
+            con.remove(custPanl);
+            custPanl = null;
+        }
         //custPanl = new CustomerPanel(empy);
         //custPanl.addSaveEmployeeListener(saveEmpyLstn);
         //con.add(custPanl, BorderLayout.WEST);
@@ -180,8 +184,14 @@ public class StartUp {
     
     private static void goToCustomerListPanel(String title, String custState, int empyId) {
         
-        con.remove(empPanl);
-        empPanl = null;
+        if (null != empPanl) {
+            con.remove(empPanl);
+            empPanl = null;
+        }
+        if (null != custPanl) {
+            con.remove(custPanl);
+            custPanl = null;
+        }
         
         custPanl = new CustomerListPanel(title, custState, empyId);
         con.add(custPanl, BorderLayout.WEST);
