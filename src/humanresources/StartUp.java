@@ -5,12 +5,12 @@
  */
 package humanresources;
 
-import java.util.*;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import humanresources.businessdomain.*;
 import humanresources.views.*;
+import humanresources.systemevent.*;
 
 /**
  *
@@ -25,9 +25,9 @@ public class StartUp {
     static CustomerRepository crep;
 
     private final static String feelNLook = "com.sun.java.swing.plaf.windows.WindowsLookAndFeel";
-    private static String panelState = "empy";  // empy || cust
-    private static String empyState = "all"; // all || sales || others
-    private static String custStatus = "all"; // all || agent
+    private static String panelState = "EMPY";  // EMPY || CUST
+    private static String empyState = "ALL"; // ALL || SALES || OTHERS
+    private static String custStatus = "ALL"; // ALL || AGENT
 
     private static JFrame frame = new JFrame();
     private static Container con;
@@ -44,6 +44,7 @@ public class StartUp {
     private static ActionListener mItemAllSalesLstn;
     private static ActionListener mItemAllOtherEmpyLstn;
     private static ActionListener mItemAllCustmLstn;
+    private static IViewCustomersListener viewCustsLstn;
 
     private static EmployeeListPanel empPanl;
     private static CustomerListPanel custPanl;
@@ -62,10 +63,10 @@ public class StartUp {
         // menu listeners
         mItemAllEmpyeLstn = new ActionListener() {
             public void actionPerformed(ActionEvent aevt) {
-                if (!(("empy" == panelState) && ("all" == empyState))) {
-                    goToEmployeeListPanel("All Employees", "all");
-                    panelState = "empy";
-                    empyState = "all";
+                if (!(("EMPY" == panelState) && ("ALL" == empyState))) {
+                    goToEmployeeListPanel("ALL");
+                    panelState = "EMPY";
+                    empyState = "ALL";
                 }
                 System.out.println("User's choice: all");
             }
@@ -73,10 +74,10 @@ public class StartUp {
         
         mItemAllSalesLstn = new ActionListener() {
             public void actionPerformed(ActionEvent aevt) {
-                if (!(("empy" == panelState) && ("sales" == empyState))) {
-                    goToEmployeeListPanel("All Sales", "sales");
-                    panelState = "empy";
-                    empyState = "sales";
+                if (!(("EMPY" == panelState) && ("SALES" == empyState))) {
+                    goToEmployeeListPanel("SALES");
+                    panelState = "EMPY";
+                    empyState = "SALES";
                 }
                 System.out.println("User's choice: sales");
             }
@@ -84,10 +85,10 @@ public class StartUp {
         
         mItemAllOtherEmpyLstn = new ActionListener() {
             public void actionPerformed(ActionEvent aevt) {
-                if (!(("empy" == panelState) && ("others" == empyState))) {
-                    goToEmployeeListPanel("All Other Employees", "others");
-                    panelState = "empy";
-                    empyState = "others";
+                if (!(("EMPY" == panelState) && ("OTHERS" == empyState))) {
+                    goToEmployeeListPanel("OTHERS");
+                    panelState = "EMPY";
+                    empyState = "OTHERS";
                 }
                 System.out.println("User's choice: others");
             }
@@ -95,16 +96,22 @@ public class StartUp {
         
         mItemAllCustmLstn = new ActionListener() {
             public void actionPerformed(ActionEvent aevt) {
-                if (!(("cust" == panelState) && ("all" == custStatus))) {
-                    goToCustomerListPanel("All Customers", "all", 0);
-                    //goToCustomerListPanel("'s Customers", "agent", 3);
-                    panelState = "cust";
-                    custStatus = "all";
+                if (!(("CUST" == panelState) && ("ALL" == custStatus))) {
+                    goToCustomerListPanel("ALL", 0);
+                    panelState = "CUST";
+                    custStatus = "ALL";
                 }
                 System.out.println("User's choice: all");
             }
         };
         
+        viewCustsLstn = new IViewCustomersListener() {
+            public void ViewCustomers(ViewCustomersEvent evt) {
+                goToCustomerListPanel("AGENT", evt.getEmployeeId());
+                panelState = "CUST";
+                custStatus = "AGENT";
+            }
+        };
 
         /**
          * ***********************************************
@@ -135,9 +142,10 @@ public class StartUp {
 
         frame.setJMenuBar(menuBar);
 
-        empPanl = new EmployeeListPanel("All Employees", "all");
+        empPanl = new EmployeeListPanel("ALL");
+        empPanl.addDeleteEmployeeListener(viewCustsLstn);
         con.add(empPanl, BorderLayout.WEST);
-
+System.out.println("con Type: " + con.getClass().getSimpleName());
         // set style
         try {
             UIManager.setLookAndFeel(feelNLook);
@@ -158,7 +166,7 @@ public class StartUp {
         frame.setVisible(true);
     }
     
-    private static void goToEmployeeListPanel(String title, String empyStatus) {
+    private static void goToEmployeeListPanel(String empyStatus) {
         
         if (null != empPanl) {
             con.remove(empPanl);
@@ -173,7 +181,8 @@ public class StartUp {
         //con.add(custPanl, BorderLayout.WEST);
         //goBackBtn.setEnabled(true);
         
-        empPanl = new EmployeeListPanel(title, empyStatus);
+        empPanl = new EmployeeListPanel(empyStatus);
+        empPanl.addDeleteEmployeeListener(viewCustsLstn);
         con.add(empPanl, BorderLayout.WEST);
         
         
@@ -182,9 +191,10 @@ public class StartUp {
     }
     
     
-    private static void goToCustomerListPanel(String title, String custState, int empyId) {
+    private static void goToCustomerListPanel(String custState, int empyId) {
         
         if (null != empPanl) {
+            empPanl.removeDeleteEmployeeListener(viewCustsLstn);
             con.remove(empPanl);
             empPanl = null;
         }
@@ -193,11 +203,18 @@ public class StartUp {
             custPanl = null;
         }
         
-        custPanl = new CustomerListPanel(title, custState, empyId);
+        custPanl = new CustomerListPanel(custState, empyId);
         con.add(custPanl, BorderLayout.WEST);
         
         frame.revalidate();
         frame.repaint();
+    }
+    
+    public static void showMessageBox(String message) {
+        JOptionPane pane = new JOptionPane(message);
+        JInternalFrame intframe = pane.createInternalFrame(frame.getLayeredPane(), "Notice");
+        frame.getLayeredPane().add(intframe);
+        intframe.show();
     }
 
 }

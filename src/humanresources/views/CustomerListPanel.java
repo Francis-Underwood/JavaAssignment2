@@ -24,7 +24,7 @@ public class CustomerListPanel extends JPanel implements ActionListener {
     private EmployeeRepository empyReposty;
     private ArrayList<Customer> custList;
     private ArrayList<Employee> empyList;
-    private String state = "all"; // all || agent
+    private String state = "ALL"; // ALL || AGENT
     private int rowInd = -1;
     private Employee empy = null;
     
@@ -47,14 +47,16 @@ public class CustomerListPanel extends JPanel implements ActionListener {
     private Object[] customerEditCtrls = null;
     
     
-    public CustomerListPanel(String title, String state, int empyId) {
+    public CustomerListPanel(String state, int empyId) {
+        String title = "";
         this.state = state;
         this.custReposty = CustomerRepository.getRepository();
         this.empyReposty = EmployeeRepository.getRepository();
         
         switch (this.state) {
-            case "all":
+            case "ALL":
                 defaut:
+                title = "All Customers";
                 this.custList = this.custReposty.all();
                 this.empyList = this.empyReposty.getByPosition(PositionType.SALESPERSON);
                 // populate manager combo box
@@ -68,30 +70,26 @@ public class CustomerListPanel extends JPanel implements ActionListener {
                     combItems.add(tempItem);
                 }
                 this.managerCombox = new JComboBox(combItems.toArray());
-                
                 break;
                 
-                
-            case "agent":
+            case "AGENT":
+                title = "'s Customers";
                 if (empyId > 0) {
                     this.custList = this.custReposty.getByEmployeeId(empyId);
                     
                     this.empy = this.empyReposty.get(empyId);
                     
                     if (null != this.empy) {
-                        //System.out.println("Rebecca: " + empy.getFname());
-                        
+                        title = this.empy.getFname() + " " + this.empy.getLname() + title;
                         this.managerCombox = new JComboBox(
-                                new VinComboItem[] {
-                                    new VinComboItem(
-                                        this.empy.getEid(),
-                                        this.empy.getFname() + " " + this.empy.getLname()
-                                    )
-                                }
+                            new VinComboItem[] {
+                                new VinComboItem(
+                                    this.empy.getEid(),
+                                    this.empy.getFname() + " " + this.empy.getLname()
+                                )
+                            }
                         );
                     }
-                    
-                    
                 }
                 else {
                     // throw
@@ -151,24 +149,26 @@ public class CustomerListPanel extends JPanel implements ActionListener {
         setBounds(0, 0, 800, 300);
         revalidate();
         repaint();
-                
     }
-    
-    
     
     public void actionPerformed(ActionEvent atnEvt) {
         
-        
         if ("Create" == atnEvt.getActionCommand()) {
+            
             this.rowInd = -1;
             resetCustEditCtrls();
             
-            if ("agent" == this.state) {
+            if ("AGENT" == this.state) {
                 this.managerCombox.setEnabled(false);
             }
             
-            int option = JOptionPane.showConfirmDialog(null, this.customerEditCtrls, 
-                    "Customer Info", JOptionPane.OK_CANCEL_OPTION);
+            int option = JOptionPane.showConfirmDialog(
+                null, 
+                this.customerEditCtrls, 
+                "Customer Info", 
+                JOptionPane.OK_CANCEL_OPTION
+            );
+            
             if (option == JOptionPane.OK_OPTION) {
                 Customer tempCust 
                     = this.custFacty.createCustomer(
@@ -195,7 +195,6 @@ public class CustomerListPanel extends JPanel implements ActionListener {
                 this.custNameTxtFld.setText(c.getCname());
                 this.payMethdCombox.setSelectedItem(c.getPaymentMethod().getDisplayName());
                 this.payMethdCombox.setEnabled(false);
-                
                 ComboBoxModel model = this.managerCombox.getModel();
                 int size = model.getSize();
                 for(int i=0; i<size; i++) {
@@ -205,21 +204,17 @@ public class CustomerListPanel extends JPanel implements ActionListener {
                     }
                 }
                 this.managerCombox.setEnabled(false);
-                
                 int option = JOptionPane.showConfirmDialog(
-                        null,
-                        customerEditCtrls,
-                        "Customer Info",
-                        JOptionPane.OK_CANCEL_OPTION
-                );
-                
+                    null,
+                    customerEditCtrls,
+                    "Customer Info",
+                    JOptionPane.OK_CANCEL_OPTION
+                );            
                 if (option == JOptionPane.OK_OPTION) {
                     c.setCname(this.custNameTxtFld.getText());
-                    
                     if (this.custReposty.update(c)) {
                         this.customerModel.setValueAt(this.custNameTxtFld.getText(), this.rowInd, 1);
                     }
-                    
                 } else {
                 }
                 this.rowInd = -1;
@@ -229,23 +224,16 @@ public class CustomerListPanel extends JPanel implements ActionListener {
         else if ("Delete" == atnEvt.getActionCommand()) {
             this.rowInd = this.customerGrid.getSelectedRow();
             if (this.rowInd > -1) {
-                
                 Customer cust = this.custList.get(this.rowInd);
                 if (this.custReposty.delete(cust.getCid())) {
                     this.custList.remove(this.rowInd);
                     this.customerModel.removeRow(this.rowInd);
+                    //this.showMessageBox(cust.getCname() + " is deleted.");
                 }
-                
                 this.rowInd = -1;
             }
         }
-        
-        
-        
-        
     }
-    
-    
     
     private void resetCustEditCtrls() {
         this.custNameTxtFld.setText("");
@@ -254,6 +242,12 @@ public class CustomerListPanel extends JPanel implements ActionListener {
         this.managerCombox.setEnabled(true);
     }
 
-    
+    private void showErrorMessage(String message) {
+        JOptionPane pane = new JOptionPane(message);
+        JFrame f = (JFrame)(this.getParent().getParent().getParent().getParent());
+        JInternalFrame intframe = pane.createInternalFrame(f.getLayeredPane(), "Error");
+        f.getLayeredPane().add(intframe);
+        intframe.show();
+    }
     
 }
