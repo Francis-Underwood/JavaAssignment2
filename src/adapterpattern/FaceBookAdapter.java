@@ -5,6 +5,6 @@ public class FaceBookAdapter extends SocialMedia{
 	public FaceBookAdapter(){}
 	@Override
 	public void shareURL(String postURL, String postTitle, Boolean isVideo) {
-		this._fb.ShareURL(postURL, postTitle);
+		this._fb.shareURL(postURL, postTitle);
 	}
 }
