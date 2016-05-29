@@ -44,6 +44,7 @@ public class EmployeeRepository {
         }
         return empy;
     }
+    
 
     public ArrayList<Employee> all() {
         String sql = "SELECT `Id`, `FirstName`, `LastName`, `Position` FROM `employee`";
@@ -165,9 +166,9 @@ public class EmployeeRepository {
     public boolean delete(int eid) {
         String sql = "DELETE FROM `employee` WHERE `Id` = ?";
         
-        boolean res = this.custRepty.deleteByEmployeeId(eid);
+        int res = this.custRepty.deleteByEmployeeId(eid);
         
-        if (res) {
+        if (res > -1) {
             try (Connection conn = DriverManager.getConnection(this.url, this.user, this.password);
                 PreparedStatement pstmt = conn.prepareStatement(sql))
             {
@@ -227,6 +228,10 @@ public class EmployeeRepository {
         else {
         }
         return employeeRepository;
+    }
+    
+    public void setURL(String url) {
+        this.url = url;
     }
 	
 }

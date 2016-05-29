@@ -55,7 +55,7 @@ public class CustomerRepository {
         return customers;
     }
     
-    public Customer getById(int cid) {
+    public Customer get(int cid) {
         String sql = "SELECT `c`.`Id`, `EmployeeId`, `Name`, `PaymentMethod`, " + 
                     "IFNULL(CONCAT(`e`.`FirstName`, ' ', `e`.`LastName`), '') AS `AgentName` " +
                     "FROM `customer` `c` LEFT JOIN `employee` `e` " + 
@@ -198,24 +198,28 @@ public class CustomerRepository {
         }
     }
     
-    public boolean deleteByEmployeeId(int eid) {
+    public int deleteByEmployeeId(int eid) {
         String sql = "DELETE FROM `customer` WHERE `EmployeeId` = ?";
         try (Connection conn = DriverManager.getConnection(this.url, this.user, this.password);
                 PreparedStatement pstmt = conn.prepareStatement(sql))
         {
             pstmt.setInt(1, eid);
             int rowsDeleted = pstmt.executeUpdate();
+            /*
             if (rowsDeleted > 0) {
                 return true;
             }
             else {
                 return true;
             }
+            */
+            return rowsDeleted;
         }
         catch (SQLException ex) {
             System.out.println(ex.getMessage());
-            return false;
+            return -1;
         }
+        
     }
     
     public int deleteAll() {
