@@ -189,6 +189,36 @@ public class EmployeeRepository {
             return false;
         }
     }
+    
+    public int deleteAll() {
+        String sql = "DELETE FROM `employee`";
+        
+        int res = this.custRepty.deleteAll();
+        
+        if (res > -1) {
+            try (Connection conn = DriverManager.getConnection(this.url, this.user, this.password);
+                PreparedStatement pstmt = conn.prepareStatement(sql))
+            {
+                int rowsDeleted = pstmt.executeUpdate();
+                /*
+                if (rowsDeleted > 0) {
+                    return true;
+                }
+                else {
+                    return false;
+                }
+                */
+                return rowsDeleted;
+            }
+            catch (SQLException ex) {
+                System.out.println(ex.getMessage());
+                return -1;
+            }
+        }
+        else {
+            return -1;
+        }
+    }
 	
     public static EmployeeRepository getRepository() {
         if (null == employeeRepository) {

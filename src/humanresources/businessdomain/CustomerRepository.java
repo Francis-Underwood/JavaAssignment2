@@ -28,8 +28,8 @@ public class CustomerRepository {
     
     public ArrayList<Customer> all() {
         String sql = "SELECT `c`.`Id`, `EmployeeId`, `Name`, `PaymentMethod`, " + 
-                    "CONCAT(`e`.`FirstName`, ' ', `e`.`LastName`) AS `AgentName` " +
-                    "FROM `customer` `c` INNER JOIN `employee` `e` " + 
+                    "IFNULL(CONCAT(`e`.`FirstName`, ' ', `e`.`LastName`), '') AS `AgentName` " +
+                    "FROM `customer` `c` LEFT JOIN `employee` `e` " + 
                     "ON `c`.`EmployeeId` = `e`.`Id` " +
                     "ORDER BY `EmployeeId`, c.`Id`";
         ArrayList<Customer> customers = new ArrayList<Customer>();
@@ -53,6 +53,32 @@ public class CustomerRepository {
         }
 
         return customers;
+    }
+    
+    public Customer getById(int cid) {
+        String sql = "SELECT `c`.`Id`, `EmployeeId`, `Name`, `PaymentMethod`, " + 
+                    "IFNULL(CONCAT(`e`.`FirstName`, ' ', `e`.`LastName`), '') AS `AgentName` " +
+                    "FROM `customer` `c` LEFT JOIN `employee` `e` " + 
+                    "ON `c`.`EmployeeId` = `e`.`Id` " +
+                    "WHERE `c`.`Id` = " + cid + " " + 
+                    "ORDER BY `EmployeeId`, c.`Id`";
+        Customer c = null;
+        try (Connection conn = DriverManager.getConnection(this.url, this.user, this.password);
+                Statement stmt = conn.createStatement();
+                ResultSet rs = stmt.executeQuery(sql)) {
+            rs.next();
+            c = custFactory.createCustomer(
+                        rs.getInt("Id"),
+                        rs.getInt("EmployeeId"),
+                        rs.getString("Name"),
+                        rs.getString("AgentName"),
+                        PaymentMethodOption.fromString(rs.getString("PaymentMethod")));
+            
+        } 
+        catch (SQLException ex) {
+            System.out.println("First: " + ex.toString());
+        }
+        return c;
     }
     
     public ArrayList<Customer> getByEmployeeId(int eid) {
@@ -192,6 +218,29 @@ public class CustomerRepository {
         }
     }
     
+    public int deleteAll() {
+        String sql = "DELETE FROM `customer`";
+        try (Connection conn = DriverManager.getConnection(this.url, this.user, this.password);
+                PreparedStatement pstmt = conn.prepareStatement(sql))
+        {
+            
+            int rowsDeleted = pstmt.executeUpdate();
+            /*
+            if (rowsDeleted > 0) {
+                return true;
+            }
+            else {
+                return true;
+            }
+            */
+            return rowsDeleted;
+        }
+        catch (SQLException ex) {
+            System.out.println(ex.getMessage());
+            return -1;
+        }
+    }
+    
     public static CustomerRepository getRepository() {
         if (null == customerRepository) {
             customerRepository = new CustomerRepository();
@@ -201,6 +250,8 @@ public class CustomerRepository {
         return customerRepository;
     }
     
-    
+    public void setURL(String url) {
+        this.url = url;
+    }
     
 }
