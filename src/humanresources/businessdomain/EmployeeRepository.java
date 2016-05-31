@@ -201,14 +201,6 @@ public class EmployeeRepository {
                 PreparedStatement pstmt = conn.prepareStatement(sql))
             {
                 int rowsDeleted = pstmt.executeUpdate();
-                /*
-                if (rowsDeleted > 0) {
-                    return true;
-                }
-                else {
-                    return false;
-                }
-                */
                 return rowsDeleted;
             }
             catch (SQLException ex) {

@@ -68,7 +68,7 @@ public class StartUp {
                     panelState = "EMPY";
                     empyState = "ALL";
                 }
-                System.out.println("User's choice: all");
+                //System.out.println("User's choice: all");
             }
         };
         
@@ -79,7 +79,7 @@ public class StartUp {
                     panelState = "EMPY";
                     empyState = "SALES";
                 }
-                System.out.println("User's choice: sales");
+                //System.out.println("User's choice: sales");
             }
         };
         
@@ -90,7 +90,7 @@ public class StartUp {
                     panelState = "EMPY";
                     empyState = "OTHERS";
                 }
-                System.out.println("User's choice: others");
+                //System.out.println("User's choice: others");
             }
         };
         
@@ -101,7 +101,7 @@ public class StartUp {
                     panelState = "CUST";
                     custStatus = "ALL";
                 }
-                System.out.println("User's choice: all");
+                //System.out.println("User's choice: all");
             }
         };
         
@@ -124,17 +124,21 @@ public class StartUp {
         con = frame.getContentPane();
 
         ///////////////////////////////////
+        mItemAllEmpye.setName("allEmployees");
         mItemAllEmpye.addActionListener(mItemAllEmpyeLstn);
         menuEmployee.add(mItemAllEmpye);
         
+        mItemAllSales.setName("allSalespersons");
         mItemAllSales.addActionListener(mItemAllSalesLstn);
         menuEmployee.add(mItemAllSales);
         
+        mItemAllOtherEmpy.setName("allOtherstaffs");
         mItemAllOtherEmpy.addActionListener(mItemAllOtherEmpyLstn);
         menuEmployee.add(mItemAllOtherEmpy);
         
         menuBar.add(menuEmployee);
 
+        mItemAllCustm.setName("allCustomers");
         mItemAllCustm.addActionListener(mItemAllCustmLstn);
         menuCustomer.add(mItemAllCustm);
         
@@ -143,9 +147,10 @@ public class StartUp {
         frame.setJMenuBar(menuBar);
 
         empPanl = new EmployeeListPanel("ALL");
+        empPanl.setName("employeeGrid");
         empPanl.addDeleteEmployeeListener(viewCustsLstn);
         con.add(empPanl, BorderLayout.WEST);
-System.out.println("con Type: " + con.getClass().getSimpleName());
+//System.out.println("con Type: " + con.getClass().getSimpleName());
         // set style
         try {
             UIManager.setLookAndFeel(feelNLook);
@@ -169,10 +174,13 @@ System.out.println("con Type: " + con.getClass().getSimpleName());
     private static void goToEmployeeListPanel(String empyStatus) {
         
         if (null != empPanl) {
+            empPanl.setName("");
+            empPanl.removeDeleteEmployeeListener(viewCustsLstn);
             con.remove(empPanl);
             empPanl = null;
         }
         if (null != custPanl) {
+            custPanl.setName("");
             con.remove(custPanl);
             custPanl = null;
         }
@@ -182,12 +190,14 @@ System.out.println("con Type: " + con.getClass().getSimpleName());
         //goBackBtn.setEnabled(true);
         
         empPanl = new EmployeeListPanel(empyStatus);
+        empPanl.setName("employeeGrid");
         empPanl.addDeleteEmployeeListener(viewCustsLstn);
         con.add(empPanl, BorderLayout.WEST);
         
-        
         frame.revalidate();
         frame.repaint();
+        
+        //System.out.println("Bobbi star");
     }
     
     
@@ -195,19 +205,24 @@ System.out.println("con Type: " + con.getClass().getSimpleName());
         
         if (null != empPanl) {
             empPanl.removeDeleteEmployeeListener(viewCustsLstn);
+            empPanl.setName("");
             con.remove(empPanl);
             empPanl = null;
         }
         if (null != custPanl) {
+            custPanl.setName("");
             con.remove(custPanl);
             custPanl = null;
         }
         
         custPanl = new CustomerListPanel(custState, empyId);
+        custPanl.setName("customerGrid");
         con.add(custPanl, BorderLayout.WEST);
         
         frame.revalidate();
         frame.repaint();
+        
+        System.out.println("showing: " + custPanl.isShowing());
     }
     
     public static void showMessageBox(String message) {
@@ -215,6 +230,24 @@ System.out.println("con Type: " + con.getClass().getSimpleName());
         JInternalFrame intframe = pane.createInternalFrame(frame.getLayeredPane(), "Notice");
         frame.getLayeredPane().add(intframe);
         intframe.show();
+    }
+    
+    public static JFrame getRootContainer() {
+        return frame;
+    }
+    
+    public static void cleanUp() {
+        if (null != empPanl) {
+            empPanl.removeDeleteEmployeeListener(viewCustsLstn);
+            empPanl.setName("Katsuni");
+            con.remove(empPanl);
+            empPanl = null;
+        }
+        if (null != custPanl) {
+            custPanl.setName("Katsuni");
+            con.remove(custPanl);
+            custPanl = null;
+        }
     }
 
 }

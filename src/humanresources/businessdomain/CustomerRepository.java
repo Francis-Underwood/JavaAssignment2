@@ -205,14 +205,6 @@ public class CustomerRepository {
         {
             pstmt.setInt(1, eid);
             int rowsDeleted = pstmt.executeUpdate();
-            /*
-            if (rowsDeleted > 0) {
-                return true;
-            }
-            else {
-                return true;
-            }
-            */
             return rowsDeleted;
         }
         catch (SQLException ex) {
@@ -226,17 +218,8 @@ public class CustomerRepository {
         String sql = "DELETE FROM `customer`";
         try (Connection conn = DriverManager.getConnection(this.url, this.user, this.password);
                 PreparedStatement pstmt = conn.prepareStatement(sql))
-        {
-            
+        {   
             int rowsDeleted = pstmt.executeUpdate();
-            /*
-            if (rowsDeleted > 0) {
-                return true;
-            }
-            else {
-                return true;
-            }
-            */
             return rowsDeleted;
         }
         catch (SQLException ex) {

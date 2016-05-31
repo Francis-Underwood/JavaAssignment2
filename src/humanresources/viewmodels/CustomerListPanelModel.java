@@ -13,14 +13,14 @@ import humanresources.businessdomain.*;
  *
  * @author Vincent
  */
-public class CustomerListPanelModel extends AbstractTableModel  {
+public class CustomerListPanelModel extends AbstractTableModel {
     
     private static final String columnNames[]
             = {
                 "Customer Id",
                 "Customer Name",
                 "Payment Method",
-                "Manager Name"
+                "Agent Name"
             };
 
     private ArrayList<Customer> custList;

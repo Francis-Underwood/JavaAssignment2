@@ -24,7 +24,6 @@ public class EmployeeListPanelModel extends AbstractTableModel {
 
     public EmployeeListPanelModel(ArrayList<Employee> empList) {
         this.empList = empList;
-        
     }
 
     @Override
@@ -57,7 +56,6 @@ public class EmployeeListPanelModel extends AbstractTableModel {
                 return e.getLname();
             case 3:
                 return e.getPosition().getDisplayName();
-            //case 4: return (e instanceof SalesPerson)?((SalesPerson)e).getCustomers().size():"N/A";
         }
         return "";
     }
@@ -67,19 +65,6 @@ public class EmployeeListPanelModel extends AbstractTableModel {
         if (row < 0 || row >= getRowCount()) {
             return;
         }
-        
-        /*
-Employee emp = this.empList.get(row);
-        switch (col) {
-            case 1:
-                emp.setFname(val.toString());
-                break;
-            case 2:
-                emp.setLname(val.toString());
-                break;
-        }
-        */
-        
         this.fireTableCellUpdated(row, col);
     }
     

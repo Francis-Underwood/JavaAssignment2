@@ -97,6 +97,7 @@ public class EmployeeListPanel extends JPanel implements ActionListener {
         this.add(this.titleLbl);
 
         this.employeeGrid = new JTable(employeeModel);
+        this.employeeGrid.setName("employeeTable");
         this.employeeGrid.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         this.employeeGrid.setPreferredScrollableViewportSize(new Dimension(600, 200));
 
@@ -113,6 +114,7 @@ public class EmployeeListPanel extends JPanel implements ActionListener {
         this.deleteBtn.addActionListener(this);
         this.editBtn.addActionListener(this);
         this.createBtn.addActionListener(this);
+        this.viewCustmBtn.setName("viewButtonInEmployeePanel");
         this.viewCustmBtn.addActionListener(this);
 
         this.btnBar.add(this.createBtn);

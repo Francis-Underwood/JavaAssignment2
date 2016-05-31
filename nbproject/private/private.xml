@@ -2,12 +2,6 @@
 <project-private xmlns="http://www.netbeans.org/ns/project-private/1">
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
-        <group>
-            <file>file:/D:/WorkComplex/mitJava/NetBeansProjects/Assignment2Question1/src/humanresources/businessdomain/Customer.java</file>
-            <file>file:/D:/WorkComplex/mitJava/NetBeansProjects/Assignment2Question1/test/humanresources/businessdomain/CustomerRepositoryTest.java</file>
-            <file>file:/D:/WorkComplex/mitJava/NetBeansProjects/Assignment2Question1/test/humanresources/businessdomain/CustomerTest.java</file>
-            <file>file:/D:/WorkComplex/mitJava/NetBeansProjects/Assignment2Question1/src/humanresources/businessdomain/CustomerRepository.java</file>
-            <file>file:/D:/WorkComplex/mitJava/NetBeansProjects/Assignment2Question1/src/humanresources/businessdomain/CustomerPayCash.java</file>
-        </group>
+        <group/>
     </open-files>
 </project-private>

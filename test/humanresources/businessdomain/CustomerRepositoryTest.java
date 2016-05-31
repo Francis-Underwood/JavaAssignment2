@@ -29,13 +29,6 @@ public class CustomerRepositoryTest {
 		this.empyRepo.deleteAll();
 	}
 
-	/*
-	@Before
-	public void fillDummyCustomers() {
-		this.cust = new Customer(141, 13, "Digital Playground", 
-				"Alexis Texas", PaymentMethodOption.CASH);
-	}
-*/
 	//@Ignore
         @Test
 	public void testInsertOneCustomerRecordIntoDataBase() {
