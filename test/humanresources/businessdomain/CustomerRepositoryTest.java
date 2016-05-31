@@ -21,10 +21,10 @@ public class CustomerRepositoryTest {
 
 	@Before
 	public void switchToTestDatabaseAndCleanUp() {
-		this.custRepo = CustomerRepository.getRepository();
+		this.custRepo = new CustomerRepository();
 		this.custRepo.setURL("jdbc:mysql://localhost:3306/vinc_humanresource_utest");
 		this.custRepo.deleteAll();
-		this.empyRepo = EmployeeRepository.getRepository();
+		this.empyRepo = new EmployeeRepository();
 		this.empyRepo.setURL("jdbc:mysql://localhost:3306/vinc_humanresource_utest");
 		this.empyRepo.deleteAll();
 	}

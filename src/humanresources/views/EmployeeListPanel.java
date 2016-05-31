@@ -22,7 +22,7 @@ public class EmployeeListPanel extends JPanel implements ActionListener {
 
     // data & state
     private EmployeeFactory empFacty = new EmployeeFactory();
-    private EmployeeRepository empyReposty;
+    private EmployeeRepository empyReposty = new EmployeeRepository();
     private ArrayList<Employee> empList;
     private String state = "ALL"; // ALL || SALES || OTHERS
     private int rowInd = -1;
@@ -51,12 +51,12 @@ public class EmployeeListPanel extends JPanel implements ActionListener {
     private List<IViewCustomersListener> viewCustsListeners 
             = new ArrayList<IViewCustomersListener>();
 
-    public EmployeeListPanel(String state) {
+    public EmployeeListPanel(String state, EmployeeRepository er) {
 
         String title = "";
         this.state = state;
 
-        this.empyReposty = EmployeeRepository.getRepository();
+        this.empyReposty = er;
 
         switch (this.state) {
             case "ALL":

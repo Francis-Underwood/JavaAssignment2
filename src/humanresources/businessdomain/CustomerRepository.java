@@ -22,9 +22,7 @@ public class CustomerRepository {
     private String password = "";
     private CustomerFactory custFactory = new CustomerFactory();
     
-    private static CustomerRepository customerRepository;	//singleton pattern
-    
-    private CustomerRepository() {}
+    public CustomerRepository() {}
     
     public ArrayList<Customer> all() {
         String sql = "SELECT `c`.`Id`, `EmployeeId`, `Name`, `PaymentMethod`, " + 
@@ -228,15 +226,7 @@ public class CustomerRepository {
         }
     }
     
-    public static CustomerRepository getRepository() {
-        if (null == customerRepository) {
-            customerRepository = new CustomerRepository();
-        } 
-        else {
-        }
-        return customerRepository;
-    }
-    
+    // for unit testing
     public void setURL(String url) {
         this.url = url;
     }

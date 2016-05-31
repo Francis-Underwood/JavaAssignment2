@@ -20,8 +20,8 @@ public class CustomerListPanel extends JPanel implements ActionListener {
     
     // data & state
     private CustomerFactory custFacty = new CustomerFactory();
-    private CustomerRepository custReposty;
-    private EmployeeRepository empyReposty;
+    private CustomerRepository custReposty = new CustomerRepository();
+    private EmployeeRepository empyReposty = new EmployeeRepository();
     private ArrayList<Customer> custList;
     private ArrayList<Employee> empyList;
     private String state = "ALL"; // ALL || AGENT
@@ -47,11 +47,11 @@ public class CustomerListPanel extends JPanel implements ActionListener {
     private Object[] customerEditCtrls = null;
     
     
-    public CustomerListPanel(String state, int empyId) {
+    public CustomerListPanel(String state, int empyId, EmployeeRepository er, CustomerRepository cr) {  // TODO: have to refactor it for testing DI?
         String title = "";
         this.state = state;
-        this.custReposty = CustomerRepository.getRepository();
-        this.empyReposty = EmployeeRepository.getRepository();
+        this.empyReposty = er;
+        this.custReposty = cr;
         
         switch (this.state) {
             case "ALL":
@@ -135,6 +135,7 @@ public class CustomerListPanel extends JPanel implements ActionListener {
         this.btnBar.setLayout(new FlowLayout(FlowLayout.LEFT));
         this.btnBar.setAlignmentX(Component.LEFT_ALIGNMENT);
         
+        this.createBtn.setName("createCustomer");
         this.createBtn.addActionListener(this);
         this.editBtn.addActionListener(this);
         this.deleteBtn.addActionListener(this);
@@ -151,6 +152,10 @@ public class CustomerListPanel extends JPanel implements ActionListener {
         repaint();
     }
     
+    public void setCustReposty(CustomerRepository cr) {
+        this.custReposty = cr;
+    }
+        
     public void actionPerformed(ActionEvent atnEvt) {
         
         if ("Create" == atnEvt.getActionCommand()) {

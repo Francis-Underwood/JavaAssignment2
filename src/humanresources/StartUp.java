@@ -18,11 +18,11 @@ import humanresources.systemevent.*;
  */
 public class StartUp {
 
-    static EmployeeFactory empF = new EmployeeFactory();
-    static EmployeeRepository rep;
+    private static EmployeeFactory empF = new EmployeeFactory();
+    private static EmployeeRepository empyRepo = new EmployeeRepository();
 
-    static CustomerFactory cusF = new CustomerFactory();
-    static CustomerRepository crep;
+    private static CustomerFactory cusF = new CustomerFactory();
+    private static CustomerRepository custRepo = new CustomerRepository();
 
     private final static String feelNLook = "com.sun.java.swing.plaf.windows.WindowsLookAndFeel";
     private static String panelState = "EMPY";  // EMPY || CUST
@@ -50,9 +50,6 @@ public class StartUp {
     private static CustomerListPanel custPanl;
 
     public static void main(String[] args) {
-
-        crep = CustomerRepository.getRepository();
-        rep = EmployeeRepository.getRepository();
 
         /**
          * ***********************************************
@@ -146,7 +143,7 @@ public class StartUp {
 
         frame.setJMenuBar(menuBar);
 
-        empPanl = new EmployeeListPanel("ALL");
+        empPanl = new EmployeeListPanel("ALL", empyRepo);
         empPanl.setName("employeeGrid");
         empPanl.addDeleteEmployeeListener(viewCustsLstn);
         con.add(empPanl, BorderLayout.WEST);
@@ -189,7 +186,7 @@ public class StartUp {
         //con.add(custPanl, BorderLayout.WEST);
         //goBackBtn.setEnabled(true);
         
-        empPanl = new EmployeeListPanel(empyStatus);
+        empPanl = new EmployeeListPanel(empyStatus, empyRepo);
         empPanl.setName("employeeGrid");
         empPanl.addDeleteEmployeeListener(viewCustsLstn);
         con.add(empPanl, BorderLayout.WEST);
@@ -215,7 +212,7 @@ public class StartUp {
             custPanl = null;
         }
         
-        custPanl = new CustomerListPanel(custState, empyId);
+        custPanl = new CustomerListPanel(custState, empyId, empyRepo, custRepo);
         custPanl.setName("customerGrid");
         con.add(custPanl, BorderLayout.WEST);
         
@@ -233,10 +230,22 @@ public class StartUp {
         intframe.show();
     }
     
+    // for unit testing
     public static JFrame getRootContainer() {
         return frame;
     }
     
+    // for unit testing
+    public static void setEmpyRepo(EmployeeRepository er) {
+        empyRepo = er;
+    }
+    
+    // for unit testing
+    public static void setCustRepo(CustomerRepository cr) {
+        custRepo = cr;
+    }
+    
+    // for unit testing
     public static void cleanUp() {
         if (null != empPanl) {
             empPanl.removeDeleteEmployeeListener(viewCustsLstn);

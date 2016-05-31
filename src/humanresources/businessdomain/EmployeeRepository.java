@@ -14,13 +14,11 @@ public class EmployeeRepository {
     private String user = "root";
     private String password = "";
     private EmployeeFactory empFactory = new EmployeeFactory();
-    private CustomerRepository custRepty;
+    private CustomerRepository custRepty = new CustomerRepository();
 
-    private static EmployeeRepository employeeRepository;	//singleton pattern
+    //private static EmployeeRepository employeeRepository;	// TODO: have to remove singleton to mock it up?
 
-    private EmployeeRepository() {
-        this.custRepty = CustomerRepository.getRepository();
-    }
+    public EmployeeRepository() {}
     
     public Employee get(int eid) {
         String sql = "SELECT `Id`, `FirstName`, `LastName`, `Position` " + 
@@ -166,7 +164,7 @@ public class EmployeeRepository {
     public boolean delete(int eid) {
         String sql = "DELETE FROM `employee` WHERE `Id` = ?";
         
-        int res = this.custRepty.deleteByEmployeeId(eid);
+        int res = this.custRepty.deleteByEmployeeId(eid);   // TODO: how to simulate that when mocking up
         
         if (res > -1) {
             try (Connection conn = DriverManager.getConnection(this.url, this.user, this.password);
@@ -212,16 +210,8 @@ public class EmployeeRepository {
             return -1;
         }
     }
-	
-    public static EmployeeRepository getRepository() {
-        if (null == employeeRepository) {
-            employeeRepository = new EmployeeRepository();
-        } 
-        else {
-        }
-        return employeeRepository;
-    }
     
+    // for unit testing
     public void setURL(String url) {
         this.url = url;
     }
