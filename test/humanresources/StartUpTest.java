@@ -34,7 +34,10 @@ public class StartUpTest {
     }
 */  
     
-    
+    @After
+    public void cleanUpThePanels() {
+        StartUp.cleanUp();
+    }
     
     
  /*   
@@ -120,9 +123,9 @@ public class StartUpTest {
         viewButtonInEmployeePanel.doClick();
         // check if the element is null
         JPanel customerPanel = (JPanel)TestUtils.getChildNamed(container, "customerGrid");
-        //assertNull(customerPanel);
+        assertNull(customerPanel);
         //assertTrue(customerPanel == null || !customerPanel.isShowing());
-        assertTrue(customerPanel.isShowing());
+        //assertTrue(customerPanel.isShowing());
     }
     
 /*
