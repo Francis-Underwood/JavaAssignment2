@@ -43,7 +43,6 @@ public class EmployeeRepository {
         return empy;
     }
     
-
     public ArrayList<Employee> all() {
         String sql = "SELECT `Id`, `FirstName`, `LastName`, `Position` FROM `employee`";
         ArrayList<Employee> employees = new ArrayList<Employee>();

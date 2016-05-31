@@ -7,15 +7,100 @@ package humanresources;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.*;
 import humanresources.testing.*;
+import humanresources.businessdomain.*;
 import org.junit.*;
 import static org.junit.Assert.*;
+import java.util.stream.Collectors;
 
 /**
  *
  * @author Vincent
  */
 public class StartUpTest {
+    
+    private EmployeeRepository mockEmpyRepo;
+    private CustomerRepository mockCustRepo;
+    
+    
+    @Before
+    public void setup() {
+        
+        this.mockEmpyRepo = new EmployeeRepository() {
+            private ArrayList<Employee> eList = new ArrayList<Employee>() {
+                {
+                    add(new OtherStaff(7, "Flower", "Tucci", PositionType.OTHERS));
+                    add(new SalesPerson(6, "Lizz", "Tayler", PositionType.SALESPERSON));
+                    add(new SalesPerson(3, "Bibi", "Jones", PositionType.SALESPERSON));
+                }
+            };
+            
+            @Override
+            public Employee get(int eid) {
+                Employee e = eList.stream()
+                    .filter(cus -> cus.getEid() == 6)
+                    .findFirst()
+                    .get();
+                return e;
+            }
+            
+            @Override
+            public ArrayList<Employee> all() {
+                return eList;
+            }
+            
+            @Override
+            public ArrayList<Employee> getByPosition(PositionType p) {
+                ArrayList<Employee> res = eList.stream()
+                    .filter(emp -> emp.getPosition()== p)
+                    .collect(Collectors.toCollection(ArrayList::new));
+                return res;
+            }
+        };
+        
+        
+        
+        this.mockCustRepo = new CustomerRepository() {
+            private ArrayList<Customer> cList = new ArrayList<Customer>() {
+                    {
+                        add(new CustomerPayCash(141, 3, "Brazzers", null, PaymentMethodOption.CASH));
+                        add(new CustomerPayWithCreditCard(142, 7, "Diabolic", null, PaymentMethodOption.CREDITCARD));
+                        add(new CustomerPayWithCreditCard(143, 7, "Diva Futura", null, PaymentMethodOption.CREDITCARD));
+                    }
+		};
+            @Override
+            public ArrayList<Customer> all() {
+                return cList;
+            }
+            
+            @Override
+            public Customer get(int cid) {
+                Customer c = cList.stream()
+                    .filter(cus -> cus.getCid() == 142)
+                    .findFirst()
+                    .get();
+                return c;
+            }
+            
+            @Override
+            public ArrayList<Customer> getByEmployeeId(int eid) {
+                ArrayList<Customer> res = cList.stream()
+                    .filter(cus -> cus.getEid() == 7)
+                    .collect(Collectors.toCollection(ArrayList::new));
+                return res;
+            }
+
+
+
+            
+            
+        };
+        
+        
+    }
+    
+    
     
     @After
     public void cleanUpThePanels() throws InterruptedException {
@@ -27,6 +112,8 @@ public class StartUpTest {
     //@Ignore
     @Test
     public void testClickAllEmployeesNavigateToEmployeeGridPanel() throws Exception {
+        StartUp.setCustRepo(this.mockCustRepo);
+        StartUp.setEmpyRepo(this.mockEmpyRepo);
         StartUp.main(new String[] {"Stoya", "Jesse", "Shay"});
         JFrame container = StartUp.getRootContainer();
 	JMenuItem allEmployees = (JMenuItem)TestUtils.getChildNamed(container, "allEmployees");
@@ -41,6 +128,8 @@ public class StartUpTest {
     //@Ignore
     @Test
     public void testClickAllSalespersonsNavigateToEmployeeGridPanel() throws Exception {
+        StartUp.setCustRepo(this.mockCustRepo);
+        StartUp.setEmpyRepo(this.mockEmpyRepo);
         StartUp.main(new String[] {"Stoya", "Jesse", "Shay"});
         JFrame container = StartUp.getRootContainer();
 	JMenuItem allSalespersons = (JMenuItem)TestUtils.getChildNamed(container, "allSalespersons");
@@ -55,6 +144,8 @@ public class StartUpTest {
     //@Ignore
     @Test
     public void testClickAllOtherStaffsNavigateToEmployeeGridPanel() throws Exception {
+        StartUp.setCustRepo(this.mockCustRepo);
+        StartUp.setEmpyRepo(this.mockEmpyRepo);
         StartUp.main(new String[] {"Stoya", "Jesse", "Shay"});
         JFrame container = StartUp.getRootContainer();
 	JMenuItem allOtherstaffs = (JMenuItem)TestUtils.getChildNamed(container, "allOtherstaffs");
@@ -69,6 +160,8 @@ public class StartUpTest {
     //@Ignore
     @Test
     public void testViewCustomersOfSalesPerson() throws Exception {
+        StartUp.setCustRepo(this.mockCustRepo);
+        StartUp.setEmpyRepo(this.mockEmpyRepo);
         StartUp.main(new String[] {"Stoya", "Jesse", "Shay"});
         JFrame container = StartUp.getRootContainer();
         JTable employeeTable = (JTable)TestUtils.getChildNamed(container, "employeeTable");
@@ -88,6 +181,8 @@ public class StartUpTest {
     //@Ignore
     @Test
     public void testClickAllCustomerNavigateToCustomerGridPanel() throws Exception {
+        StartUp.setCustRepo(this.mockCustRepo);
+        StartUp.setEmpyRepo(this.mockEmpyRepo);
         StartUp.main(new String[] {"Stoya", "Jesse", "Shay"});
         JFrame container = StartUp.getRootContainer();
 	JMenuItem allCustomers = (JMenuItem)TestUtils.getChildNamed(container, "allCustomers");
@@ -102,6 +197,8 @@ public class StartUpTest {
     //@Ignore
     @Test
     public void testViewCustomersOfOtherStaff() throws Exception {
+        StartUp.setCustRepo(this.mockCustRepo);
+        StartUp.setEmpyRepo(this.mockEmpyRepo);
         StartUp.main(new String[] {"Stoya", "Jesse", "Shay"});
         JFrame container = StartUp.getRootContainer();
         JTable employeeTable = (JTable)TestUtils.getChildNamed(container, "employeeTable");
@@ -120,6 +217,8 @@ public class StartUpTest {
     //@Ignore
     @Test
     public void testShowMessageBox() throws Exception {
+        StartUp.setCustRepo(this.mockCustRepo);
+        StartUp.setEmpyRepo(this.mockEmpyRepo);
         StartUp.main(new String[] {"Stoya", "Jesse", "Shay"});
         JFrame container = StartUp.getRootContainer();
         StartUp.showMessageBox("Unit Testing");

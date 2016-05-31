@@ -65,7 +65,6 @@ public class StartUp {
                     panelState = "EMPY";
                     empyState = "ALL";
                 }
-                //System.out.println("User's choice: all");
             }
         };
         
@@ -76,7 +75,6 @@ public class StartUp {
                     panelState = "EMPY";
                     empyState = "SALES";
                 }
-                //System.out.println("User's choice: sales");
             }
         };
         
@@ -87,7 +85,6 @@ public class StartUp {
                     panelState = "EMPY";
                     empyState = "OTHERS";
                 }
-                //System.out.println("User's choice: others");
             }
         };
         
@@ -98,7 +95,6 @@ public class StartUp {
                     panelState = "CUST";
                     custStatus = "ALL";
                 }
-                //System.out.println("User's choice: all");
             }
         };
         
@@ -147,7 +143,7 @@ public class StartUp {
         empPanl.setName("employeeGrid");
         empPanl.addDeleteEmployeeListener(viewCustsLstn);
         con.add(empPanl, BorderLayout.WEST);
-//System.out.println("con Type: " + con.getClass().getSimpleName());
+        
         // set style
         try {
             UIManager.setLookAndFeel(feelNLook);
@@ -218,8 +214,6 @@ public class StartUp {
         
         frame.revalidate();
         frame.repaint();
-        
-        System.out.println("showing: " + custPanl.isShowing());
     }
     
     public static void showMessageBox(String message) {
