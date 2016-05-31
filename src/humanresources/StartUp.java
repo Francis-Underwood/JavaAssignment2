@@ -228,6 +228,7 @@ public class StartUp {
     public static void showMessageBox(String message) {
         JOptionPane pane = new JOptionPane(message);
         JInternalFrame intframe = pane.createInternalFrame(frame.getLayeredPane(), "Notice");
+        intframe.setName("messageBoxPane");
         frame.getLayeredPane().add(intframe);
         intframe.show();
     }

@@ -116,10 +116,16 @@ public class StartUpTest {
         JPanel customerPanel = (JPanel)TestUtils.getChildNamed(container, "customerGrid");
         assertNull(customerPanel);
     }
-    
-/*
+
+    //@Ignore
     @Test
-    public void testShowMessageBox() {
+    public void testShowMessageBox() throws Exception {
+        StartUp.main(new String[] {"Stoya", "Jesse", "Shay"});
+        JFrame container = StartUp.getRootContainer();
+        StartUp.showMessageBox("Unit Testing");
+        Thread.sleep(200);
+        JInternalFrame messageBoxPane = (JInternalFrame)TestUtils.getChildNamed(container, "messageBoxPane");
+	assertNotNull(messageBoxPane);
     }
-  */  
+    
 }
