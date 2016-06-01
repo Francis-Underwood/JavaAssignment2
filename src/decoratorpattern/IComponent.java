@@ -1,5 +1,5 @@
 package decoratorpattern;
 
 public interface IComponent {
-	public abstract String operate();
+    public abstract String operate();
 }

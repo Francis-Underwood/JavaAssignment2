@@ -108,7 +108,7 @@ public class CustomerListPanel extends JPanel implements ActionListener {
                 = new Object[]{
                     "Customer name:", custNameTxtFld,
                     "Payment method:", payMethdCombox,
-                    "Manager:", managerCombox
+                    "Agent:", managerCombox
                 };
         
         this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));

@@ -18,7 +18,7 @@ public class EmployeeListPanelModel extends AbstractTableModel {
     private static final String columnNames[] = {"Employee Id",
         "Employee First Name",
         "Employee Last Name",
-        "Category"};
+        "Position"};
 
     protected ArrayList<Employee> empList;
 

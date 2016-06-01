@@ -18,10 +18,7 @@ import humanresources.systemevent.*;
  */
 public class StartUp {
 
-    private static EmployeeFactory empF = new EmployeeFactory();
     private static EmployeeRepository empyRepo = new EmployeeRepository();
-
-    private static CustomerFactory cusF = new CustomerFactory();
     private static CustomerRepository custRepo = new CustomerRepository();
 
     private final static String feelNLook = "com.sun.java.swing.plaf.windows.WindowsLookAndFeel";
