@@ -28,7 +28,7 @@ public class EmployeeListPanel extends JPanel implements ActionListener {
     private String state = "ALL"; // ALL || SALES || OTHERS
     private int rowInd = -1;
     private List<String> errList = new ArrayList<String>();
-    private Pattern pattern = Pattern.compile("^[a-zA-Z]+$");
+    private Pattern pattern = Pattern.compile("^[\\p{Alpha}]+$");
 
     // component
     private JScrollPane scrollPane;
@@ -151,13 +151,19 @@ public class EmployeeListPanel extends JPanel implements ActionListener {
                 this.empPosTypeCombox.setEnabled(false);
                 int option = JOptionPane.showConfirmDialog(null, this.employeeEditCtrls,
                         "Employee Info", JOptionPane.OK_CANCEL_OPTION);
-                if (option == JOptionPane.OK_OPTION) {
-                    emp.setFname(this.empFNameTxtFld.getText());
-                    emp.setLname(this.empLNameTxtFld.getText());
-                    if (this.empyReposty.update(emp)) {
-                        this.employeeModel.setValueAt(empFNameTxtFld.getText(), this.rowInd, 1);
+                if (option == JOptionPane.OK_OPTION) {  
+                    if (this.validateEmployeeForm()) {
+                        emp.setFname(this.empFNameTxtFld.getText());
+                        emp.setLname(this.empLNameTxtFld.getText());
+                        if (this.empyReposty.update(emp)) {
+                            this.employeeModel.setValueAt(empFNameTxtFld.getText(), this.rowInd, 1);
+                        }
                     }
-                } else {
+                    else {
+                        JOptionPane.showMessageDialog(null, String.join("\n", this.errList));
+                    }
+                } 
+                else {
                 }
                 this.rowInd = -1;
                 resetEmpyEditCtrls();
@@ -248,25 +254,18 @@ public class EmployeeListPanel extends JPanel implements ActionListener {
         
         // first name
         if (this.empFNameTxtFld.getText() != null ) {
-            
-            System.out.println("input value: " + this.empFNameTxtFld.getText() );
-            
             if (this.empFNameTxtFld.getText().isEmpty()) {
                 valid = false;
                 this.errList.add("Please input first name.");
             }
             else {
                 Matcher matcher = this.pattern.matcher(this.empFNameTxtFld.getText());
-               
                 if (matcher.matches()) {
-                    valid = false;
-                    this.errList.add("First name contains invalid symbols.");
-                    if (matcher.find( )) {
-         System.out.println("Found value: " + matcher.group(0) );
-      } 
+                    // all good
                 }
                 else {
-                    // all good
+                    valid = false;
+                    this.errList.add("First name contains invalid symbols.");
                 }
             }
         }
@@ -274,7 +273,6 @@ public class EmployeeListPanel extends JPanel implements ActionListener {
             valid = false;
         }
         
-        /*
         // last name
         if (this.empLNameTxtFld.getText() != null ) {
             if (this.empLNameTxtFld.getText().isEmpty()) {
@@ -284,19 +282,17 @@ public class EmployeeListPanel extends JPanel implements ActionListener {
             else {
                 Matcher matcher = this.pattern.matcher(this.empLNameTxtFld.getText());
                 if (matcher.matches()) {
-                    valid = false;
-                    this.errList.add("Last name contains invalid symbols.");
+                    // all good
                 }
                 else {
-                    // all good
+                    valid = false;
+                    this.errList.add("Last name contains invalid symbols.");
                 }
             }
         }
         else {
             valid = false;
         }
-        
-        */
         
         return valid;
     }

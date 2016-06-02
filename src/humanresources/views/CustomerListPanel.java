@@ -6,6 +6,8 @@
 package humanresources.views;
 
 import java.util.*;
+import java.util.List;
+import java.util.regex.*;
 import java.awt.*;
 import javax.swing.*;
 import java.awt.event.*;
@@ -27,6 +29,8 @@ public class CustomerListPanel extends JPanel implements ActionListener {
     private String state = "ALL"; // ALL || AGENT
     private int rowInd = -1;
     private Employee empy = null;
+    private List<String> errList = new ArrayList<String>();
+    private Pattern pattern = Pattern.compile("^[ \\p{Alpha}]*$");
     
     // component
     private JScrollPane scrollPane;
@@ -175,19 +179,24 @@ public class CustomerListPanel extends JPanel implements ActionListener {
             );
             
             if (option == JOptionPane.OK_OPTION) {
-                Customer tempCust 
-                    = this.custFacty.createCustomer(
-                        0, 
-                        ((VinComboItem)this.managerCombox.getSelectedItem()).getValue(), 
-                        this.custNameTxtFld.getText(), 
-                        ((VinComboItem)this.managerCombox.getSelectedItem()).getLabel(), 
-                        PaymentMethodOption.fromString(this.payMethdCombox.getSelectedItem().toString())
-                    );
-                int generatedId = this.custReposty.add(tempCust);
-                if (generatedId > 0) {
-                    tempCust.setCid(generatedId);
-                    this.custList.add(tempCust);
-                    this.customerModel.addRow(tempCust);
+                if (this.validateCustomerForm()) {
+                    Customer tempCust 
+                        = this.custFacty.createCustomer(
+                            0, 
+                            ((VinComboItem)this.managerCombox.getSelectedItem()).getValue(), 
+                            this.custNameTxtFld.getText(), 
+                            ((VinComboItem)this.managerCombox.getSelectedItem()).getLabel(), 
+                            PaymentMethodOption.fromString(this.payMethdCombox.getSelectedItem().toString())
+                        );
+                    int generatedId = this.custReposty.add(tempCust);
+                    if (generatedId > 0) {
+                        tempCust.setCid(generatedId);
+                        this.custList.add(tempCust);
+                        this.customerModel.addRow(tempCust);
+                    }
+                }
+                else {
+                    JOptionPane.showMessageDialog(null, String.join("\n", this.errList));
                 }
             } 
             else {}
@@ -216,11 +225,17 @@ public class CustomerListPanel extends JPanel implements ActionListener {
                     JOptionPane.OK_CANCEL_OPTION
                 );            
                 if (option == JOptionPane.OK_OPTION) {
-                    c.setCname(this.custNameTxtFld.getText());
-                    if (this.custReposty.update(c)) {
-                        this.customerModel.setValueAt(this.custNameTxtFld.getText(), this.rowInd, 1);
+                    if (this.validateCustomerForm()) {
+                        c.setCname(this.custNameTxtFld.getText());
+                        if (this.custReposty.update(c)) {
+                            this.customerModel.setValueAt(this.custNameTxtFld.getText(), this.rowInd, 1);
+                        }
                     }
-                } else {
+                    else {
+                        JOptionPane.showMessageDialog(null, String.join("\n", this.errList));
+                    }
+                } 
+                else {
                 }
                 this.rowInd = -1;
                 resetCustEditCtrls();
@@ -253,6 +268,34 @@ public class CustomerListPanel extends JPanel implements ActionListener {
         JInternalFrame intframe = pane.createInternalFrame(f.getLayeredPane(), "Error");
         f.getLayeredPane().add(intframe);
         intframe.show();
+    }
+    
+    private boolean validateCustomerForm() {
+        boolean valid = true;
+        this.errList.clear();
+        
+        // customer name
+        if (this.custNameTxtFld.getText() != null ) {
+            if (this.custNameTxtFld.getText().isEmpty()) {
+                valid = false;
+                this.errList.add("Please input customer name.");
+            }
+            else {
+                Matcher matcher = this.pattern.matcher(this.custNameTxtFld.getText());
+                if (matcher.matches()) {
+                    // all good
+                }
+                else {
+                    valid = false;
+                    this.errList.add("Customer name contains invalid symbols.");
+                }
+            }
+        }
+        else {
+            valid = false;
+        }
+        
+        return valid;
     }
     
 }
