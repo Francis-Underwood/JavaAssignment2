@@ -20,7 +20,7 @@ public class EmployeeListPanelModel extends AbstractTableModel {
         "Employee Last Name",
         "Position"};
 
-    protected ArrayList<Employee> empList;
+    private ArrayList<Employee> empList;
 
     public EmployeeListPanelModel(ArrayList<Employee> empList) {
         this.empList = empList;
