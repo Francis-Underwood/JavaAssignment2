@@ -49,7 +49,7 @@ public class EmployeeListPanelModelTest {
         assertThat(this.empyModel.getColumnName(0), is("Employee Id"));
         assertThat(this.empyModel.getColumnName(1), is("Employee First Name"));
         assertThat(this.empyModel.getColumnName(2), is("Employee Last Name"));
-        assertThat(this.empyModel.getColumnName(3), is("Category"));
+        assertThat(this.empyModel.getColumnName(3), is("Position"));
     }
 
     @Test

@@ -6,6 +6,7 @@
 package humanresources.businessdomain;
 
 import java.util.*;
+import java.sql.SQLException;
 import org.junit.*;
 import static org.junit.Assert.*;
 import static org.hamcrest.CoreMatchers. * ;
@@ -20,7 +21,7 @@ public class EmployeeRepositoryTest {
     private EmployeeRepository empyRepo;
 
     @Before
-    public void switchToTestDatabaseAndCleanUp() {
+    public void switchToTestDatabaseAndCleanUp() throws SQLException {
         this.custRepo = new CustomerRepository();
         this.custRepo.setURL("jdbc:mysql://localhost:3306/vinc_humanresource_utest");
         this.custRepo.deleteAll();
@@ -32,7 +33,7 @@ public class EmployeeRepositoryTest {
         
     //@Ignore
     @Test
-    public void testInsertOneEmployeeRecordIntoDataBase() {
+    public void testInsertOneEmployeeRecordIntoDataBase() throws SQLException {
         // Arrange
         Employee etemp = new SalesPerson(0, "Nikki", "Benz", PositionType.SALESPERSON);
         Employee etempCopy = null;
@@ -47,7 +48,7 @@ public class EmployeeRepositoryTest {
     
     //@Ignore
     @Test
-    public void testDeleteAllEmployeeRecordsFromDatabase() {
+    public void testDeleteAllEmployeeRecordsFromDatabase() throws SQLException {
         // Arrange
         List<Employee> eList = new ArrayList<Employee>() {
             {
@@ -70,7 +71,7 @@ public class EmployeeRepositoryTest {
 
     //@Ignore
     @Test
-    public void testRetrieveAllEmployeeRecordsFromDatabase() {
+    public void testRetrieveAllEmployeeRecordsFromDatabase() throws SQLException {
         // Arrange
         List<Employee> eList = new ArrayList<Employee>() {
             {
@@ -93,7 +94,7 @@ public class EmployeeRepositoryTest {
 
     //@Ignore
     @Test
-    public void testDeleteOneEmployeeRecordByItsId() {
+    public void testDeleteOneEmployeeRecordByItsId() throws SQLException {
         // Arrange
         List<Employee> eList = new ArrayList<Employee>() {
             {
@@ -116,7 +117,7 @@ public class EmployeeRepositoryTest {
 
     //@Ignore
     @Test
-    public void testUpdateOneEmployeeRecordByItsId() {
+    public void testUpdateOneEmployeeRecordByItsId() throws SQLException {
         // Arrange
         List<Employee> eList = new ArrayList<Employee>() {
             {
@@ -141,7 +142,7 @@ public class EmployeeRepositoryTest {
 
     //@Ignore
     @Test
-    public void testRetrieveOneEmployeeRecordByItsId() {
+    public void testRetrieveOneEmployeeRecordByItsId() throws SQLException {
         // Arrange
         List<Employee> eList = new ArrayList<Employee>() {
             {
@@ -164,7 +165,7 @@ public class EmployeeRepositoryTest {
 
     //@Ignore
     @Test
-    public void testRetrieveEmployeeRecordsByTheirPositionType() {
+    public void testRetrieveEmployeeRecordsByTheirPositionType() throws SQLException {
         // Arrange
         List<Employee> eList = new ArrayList<Employee>() {
             {

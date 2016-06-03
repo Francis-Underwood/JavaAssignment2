@@ -6,7 +6,6 @@
 package humanresources;
 
 import javax.swing.*;
-import java.awt.*;
 import java.util.*;
 import humanresources.testing.*;
 import humanresources.businessdomain.*;

@@ -6,6 +6,7 @@
 package humanresources.businessdomain;
 
 import java.util.*;
+import java.sql.SQLException;
 import org.junit.*;
 import static org.junit.Assert.*;
 import static org.hamcrest.CoreMatchers.*;
@@ -20,7 +21,7 @@ public class CustomerRepositoryTest {
 	private EmployeeRepository empyRepo;
 
 	@Before
-	public void switchToTestDatabaseAndCleanUp() {
+	public void switchToTestDatabaseAndCleanUp() throws SQLException {
 		this.custRepo = new CustomerRepository();
 		this.custRepo.setURL("jdbc:mysql://localhost:3306/vinc_humanresource_utest");
 		this.custRepo.deleteAll();
@@ -31,7 +32,7 @@ public class CustomerRepositoryTest {
 
 	//@Ignore
         @Test
-	public void testInsertOneCustomerRecordIntoDataBase() {
+	public void testInsertOneCustomerRecordIntoDataBase() throws SQLException {
 		// Arrange
 		Customer temp = new CustomerPayCash(0, 0, "Elegent Angel", null, PaymentMethodOption.CASH);
 		Customer tempCopy = null;
@@ -46,7 +47,7 @@ public class CustomerRepositoryTest {
 
 	//@Ignore
         @Test
-	public void testDeleteAllCustomerRecordsFromDatabase() {
+	public void testDeleteAllCustomerRecordsFromDatabase() throws SQLException {
 		// Arrange
 		List<Customer> cList = new ArrayList<Customer>() {
 			{
@@ -69,7 +70,7 @@ public class CustomerRepositoryTest {
 
 	//@Ignore
         @Test
-	public void testRetrieveAllCustomerRecordsFromDatabase() {
+	public void testRetrieveAllCustomerRecordsFromDatabase() throws SQLException {
 		// Arrange
 		List<Customer> cList = new ArrayList<Customer>() {
 			{
@@ -92,7 +93,7 @@ public class CustomerRepositoryTest {
 
 	//@Ignore
         @Test
-	public void testDeleteOneCustomerByItsId() {
+	public void testDeleteOneCustomerByItsId() throws SQLException {
 		// Arrange
 		List<Customer> cList = new ArrayList<Customer>() {
 			{
@@ -115,7 +116,7 @@ public class CustomerRepositoryTest {
 
 	//@Ignore
         @Test
-	public void testUpdateOneCustomerByItsId() {
+	public void testUpdateOneCustomerByItsId() throws SQLException {
 		// Arrange
 		List<Customer> cList = new ArrayList<Customer>() {
 			{
@@ -140,7 +141,7 @@ public class CustomerRepositoryTest {
 
 	//@Ignore
         @Test
-	public void testRetrieveCustomersByTheirEmployeeId() {
+	public void testRetrieveCustomersByTheirEmployeeId() throws SQLException {
 		// Arrange
 		Employee etemp = new SalesPerson(0, "Nikki", "Benz", PositionType.SALESPERSON);
 		int insertedId = this.empyRepo.add(etemp);
@@ -166,7 +167,7 @@ public class CustomerRepositoryTest {
 
         //@Ignore
 	@Test
-	public void testDeleteCustomersByTheirEmployeeId() {
+	public void testDeleteCustomersByTheirEmployeeId() throws SQLException {
 		// Arrange
 		Employee etemp = new SalesPerson(0, "Nikki", "Benz", PositionType.SALESPERSON);
 		int insertedId = this.empyRepo.add(etemp);

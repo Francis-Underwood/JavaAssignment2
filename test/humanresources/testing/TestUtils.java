@@ -1,12 +1,11 @@
 /*
+ * A tool for querying from element tree, from
  * http://www.javaworld.com/article/2073056/swing-gui-programming/automate-gui-tests-for-swing-applications.html
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+ * no liensce specified by the author
  */
 package humanresources.testing;
 
 /**
- * 
  * @author Ichiro Suzuki
  */
 import java.awt.*;
