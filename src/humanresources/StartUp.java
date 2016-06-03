@@ -8,6 +8,8 @@ package humanresources;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.sql.SQLException;
+import java.lang.*;
 import humanresources.businessdomain.*;
 import humanresources.views.*;
 import humanresources.systemevent.*;
@@ -136,10 +138,19 @@ public class StartUp {
 
         frame.setJMenuBar(menuBar);
 
-        empPanl = new EmployeeListPanel("ALL", empyRepo);
-        empPanl.setName("employeeGrid");
-        empPanl.addDeleteEmployeeListener(viewCustsLstn);
-        con.add(empPanl, BorderLayout.WEST);
+        try {
+            empPanl = new EmployeeListPanel("ALL", empyRepo);
+            empPanl.setName("employeeGrid");
+            empPanl.addDeleteEmployeeListener(viewCustsLstn);
+            con.add(empPanl, BorderLayout.WEST);
+        }
+        catch (SQLException ex) {
+            showMessageBox("Database error, try again later.");
+        }
+        catch (Exception ex) {
+            showMessageBox("Error, try again later.");
+        }
+        
         
         // set style
         try {
@@ -179,10 +190,18 @@ public class StartUp {
         //con.add(custPanl, BorderLayout.WEST);
         //goBackBtn.setEnabled(true);
         
-        empPanl = new EmployeeListPanel(empyStatus, empyRepo);
-        empPanl.setName("employeeGrid");
-        empPanl.addDeleteEmployeeListener(viewCustsLstn);
-        con.add(empPanl, BorderLayout.WEST);
+        try {
+            empPanl = new EmployeeListPanel(empyStatus, empyRepo);
+            empPanl.setName("employeeGrid");
+            empPanl.addDeleteEmployeeListener(viewCustsLstn);
+            con.add(empPanl, BorderLayout.WEST);
+        }
+        catch (SQLException ex) {
+            showMessageBox("Database error, try again later.");
+        }
+        catch (Exception ex) {
+            showMessageBox("Error, try again later.");
+        }
         
         frame.revalidate();
         frame.repaint();
@@ -205,9 +224,17 @@ public class StartUp {
             custPanl = null;
         }
         
-        custPanl = new CustomerListPanel(custState, empyId, empyRepo, custRepo);
-        custPanl.setName("customerGrid");
-        con.add(custPanl, BorderLayout.WEST);
+        try {
+            custPanl = new CustomerListPanel(custState, empyId, empyRepo, custRepo);
+            custPanl.setName("customerGrid");
+            con.add(custPanl, BorderLayout.WEST);
+        }
+        catch (SQLException ex) {
+            showMessageBox("Database error, try again later.");
+        }
+        catch (Exception ex) {
+            showMessageBox("Error, try again later.");
+        }
         
         frame.revalidate();
         frame.repaint();

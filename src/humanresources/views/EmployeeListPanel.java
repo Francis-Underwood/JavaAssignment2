@@ -11,6 +11,7 @@ import java.util.regex.*;
 import java.awt.*;
 import javax.swing.*;
 import java.awt.event.*;
+import java.sql.SQLException;
 import humanresources.businessdomain.*;
 import humanresources.viewmodels.*;
 import humanresources.systemevent.*;
@@ -24,7 +25,7 @@ public class EmployeeListPanel extends JPanel implements ActionListener {
     // data & state
     private EmployeeFactory empFacty = new EmployeeFactory();
     private EmployeeRepository empyReposty = new EmployeeRepository();
-    private ArrayList<Employee> empList;
+    private ArrayList<Employee> empList = new ArrayList<Employee>();
     private String state = "ALL"; // ALL || SALES || OTHERS
     private int rowInd = -1;
     private List<String> errList = new ArrayList<String>();
@@ -54,7 +55,7 @@ public class EmployeeListPanel extends JPanel implements ActionListener {
     private List<IViewCustomersListener> viewCustsListeners 
             = new ArrayList<IViewCustomersListener>();
 
-    public EmployeeListPanel(String state, EmployeeRepository er) {
+    public EmployeeListPanel(String state, EmployeeRepository er) throws SQLException {
 
         String title = "";
         this.state = state;
@@ -134,12 +135,20 @@ public class EmployeeListPanel extends JPanel implements ActionListener {
         if ("Delete" == atnEvt.getActionCommand()) {
             this.rowInd = this.employeeGrid.getSelectedRow();
             if (this.rowInd > -1) {
-                Employee emp = this.empList.get(this.rowInd);
-                if (this.empyReposty.delete(emp.getEid())) {
-                    this.empList.remove(this.rowInd);
-                    this.employeeModel.removeRow(this.rowInd);
+                try {
+                    Employee emp = this.empList.get(this.rowInd);
+                    if (this.empyReposty.delete(emp.getEid())) {
+                        this.empList.remove(this.rowInd);
+                        this.employeeModel.removeRow(this.rowInd);
+                    }
                 }
-                this.rowInd = -1;
+                catch (SQLException ex) {
+                    this.showErrorMessage("Database error, try again later.");
+                }
+                finally {
+                    this.rowInd = -1;
+                }
+                
             }
         } else if ("Edit" == atnEvt.getActionCommand()) {
             this.rowInd = this.employeeGrid.getSelectedRow();
@@ -155,9 +164,17 @@ public class EmployeeListPanel extends JPanel implements ActionListener {
                     if (this.validateEmployeeForm()) {
                         emp.setFname(this.empFNameTxtFld.getText());
                         emp.setLname(this.empLNameTxtFld.getText());
-                        if (this.empyReposty.update(emp)) {
-                            this.employeeModel.setValueAt(empFNameTxtFld.getText(), this.rowInd, 1);
+                        
+                        try {
+                            if (this.empyReposty.update(emp)) {
+                                this.employeeModel.setValueAt(empFNameTxtFld.getText(), this.rowInd, 1);
+                                this.employeeModel.setValueAt(empLNameTxtFld.getText(), this.rowInd, 2);
+                            }
                         }
+                        catch (SQLException ex) {
+                            this.showErrorMessage("Database error, try again later.");
+                        }
+                        
                     }
                     else {
                         JOptionPane.showMessageDialog(null, String.join("\n", this.errList));
@@ -205,12 +222,18 @@ public class EmployeeListPanel extends JPanel implements ActionListener {
                         this.empFNameTxtFld.getText(),
                         this.empLNameTxtFld.getText()
                     );
-                    int generatedId = this.empyReposty.add(tempEmp);
-                    if (generatedId > 0) {
-                        tempEmp.setEid(generatedId);
-                        this.empList.add(tempEmp);
-                        this.employeeModel.addRow(tempEmp);
+                    try {
+                        int generatedId = this.empyReposty.add(tempEmp);
+                        if (generatedId > 0) {
+                            tempEmp.setEid(generatedId);
+                            this.empList.add(tempEmp);
+                            this.employeeModel.addRow(tempEmp);
+                        }
                     }
+                    catch (SQLException ex) {
+                        this.showErrorMessage("Database error, try again later.");
+                    }
+                    
                 }
                 else {
                     JOptionPane.showMessageDialog(null, String.join("\n", this.errList));
@@ -307,6 +330,14 @@ public class EmployeeListPanel extends JPanel implements ActionListener {
         for (int i=0; i<this.viewCustsListeners.size(); i++) {
             ((IViewCustomersListener)this.viewCustsListeners.get(i)).ViewCustomers(vcEvt);
         }
+    }
+    
+    private void showErrorMessage(String message) {
+        JOptionPane pane = new JOptionPane(message);
+        JFrame f = (JFrame)(this.getParent().getParent().getParent().getParent());
+        JInternalFrame intframe = pane.createInternalFrame(f.getLayeredPane(), "Error");
+        f.getLayeredPane().add(intframe);
+        intframe.show();
     }
 
 }

@@ -24,7 +24,7 @@ public class CustomerRepository {
     
     public CustomerRepository() {}
     
-    public ArrayList<Customer> all() {
+    public ArrayList<Customer> all() throws SQLException {
         String sql = "SELECT `c`.`Id`, `EmployeeId`, `Name`, `PaymentMethod`, " + 
                     "IFNULL(CONCAT(`e`.`FirstName`, ' ', `e`.`LastName`), '') AS `AgentName` " +
                     "FROM `customer` `c` LEFT JOIN `employee` `e` " + 
@@ -47,13 +47,14 @@ public class CustomerRepository {
             }
         }
         catch (SQLException ex) {
-            System.out.println("First: " + ex.toString());
+            System.out.println("Aletta: " + ex.toString());
+            throw ex;
         }
-
+        //throw new SQLException(); // test
         return customers;
     }
     
-    public Customer get(int cid) {
+    public Customer get(int cid) throws SQLException {
         String sql = "SELECT `c`.`Id`, `EmployeeId`, `Name`, `PaymentMethod`, " + 
                     "IFNULL(CONCAT(`e`.`FirstName`, ' ', `e`.`LastName`), '') AS `AgentName` " +
                     "FROM `customer` `c` LEFT JOIN `employee` `e` " + 
@@ -74,12 +75,13 @@ public class CustomerRepository {
             
         } 
         catch (SQLException ex) {
-            System.out.println("First: " + ex.toString());
+            System.out.println("Aletta: " + ex.toString());
+            throw ex;
         }
         return c;
     }
     
-    public ArrayList<Customer> getByEmployeeId(int eid) {
+    public ArrayList<Customer> getByEmployeeId(int eid) throws SQLException {
         String sql = "SELECT `c`.`Id`, `EmployeeId`, `Name`, `PaymentMethod`, " + 
                     "CONCAT(`e`.`FirstName`, ' ', `e`.`LastName`) AS `AgentName` " + 
                     "FROM `customer` `c` INNER JOIN `employee` `e` "  + 
@@ -102,13 +104,14 @@ public class CustomerRepository {
             }
         } 
         catch (SQLException ex) {
-            System.out.println("First: " + ex.toString());
+            System.out.println("Aletta: " + ex.toString());
+            throw ex;
         }
 
         return customers;
     }
     
-    public boolean update(Customer cust) {
+    public boolean update(Customer cust) throws SQLException {
         String sql = "UPDATE `customer` "
                 + "SET `Name` = ?, "
                 + "`PaymentMethod` = ? "
@@ -122,7 +125,7 @@ public class CustomerRepository {
             pstmt.setInt(3, cust.getCid());
             
             int rowAffected = pstmt.executeUpdate();
-            System.out.println(String.format("Row updated %d", rowAffected));
+            //System.out.println(String.format("Row updated %d", rowAffected));
             if (rowAffected > 0) {
                 return true;
             }
@@ -131,12 +134,13 @@ public class CustomerRepository {
             }
         }
         catch (SQLException ex) {
-            System.out.println(ex.getMessage());
-            return false;
+            System.out.println("Aletta: " + ex.getMessage());
+            throw ex;
+            //return false;
         }
     }
     
-    public int add(Customer cust) {
+    public int add(Customer cust) throws SQLException {
         String sql = "INSERT INTO `customer`(`EmployeeId`, `Name`, `PaymentMethod`) VALUES(?,?,?)";
         
         ResultSet rs = null;
@@ -160,7 +164,8 @@ public class CustomerRepository {
                 
         }
         catch (SQLException ex) {
-            System.out.println(ex.getMessage());
+            System.out.println("Aletta: " + ex.getMessage());
+            throw ex;
         } 
         finally {
             try {
@@ -169,14 +174,15 @@ public class CustomerRepository {
                 }
             } 
             catch (SQLException ex) {
-                System.out.println(ex.getMessage());
+                System.out.println("Aletta: " + ex.getMessage());
+                throw ex;
             }
         }
         
         return candidateId;
     }
     
-    public boolean delete(int cid) {
+    public boolean delete(int cid) throws SQLException {
         String sql = "DELETE FROM `customer` WHERE `Id` = ?";
         try (Connection conn = DriverManager.getConnection(this.url, this.user, this.password);
                 PreparedStatement pstmt = conn.prepareStatement(sql))
@@ -191,12 +197,12 @@ public class CustomerRepository {
             }
         }
         catch (SQLException ex) {
-            System.out.println(ex.getMessage());
-            return false;
+            System.out.println("Aletta: " + ex.getMessage());
+            throw ex;
         }
     }
     
-    public int deleteByEmployeeId(int eid) {
+    public int deleteByEmployeeId(int eid) throws SQLException {
         String sql = "DELETE FROM `customer` WHERE `EmployeeId` = ?";
         try (Connection conn = DriverManager.getConnection(this.url, this.user, this.password);
                 PreparedStatement pstmt = conn.prepareStatement(sql))
@@ -206,13 +212,14 @@ public class CustomerRepository {
             return rowsDeleted;
         }
         catch (SQLException ex) {
-            System.out.println(ex.getMessage());
-            return -1;
+            System.out.println("Aletta: " + ex.getMessage());
+            throw ex;
+            //return -1;
         }
         
     }
     
-    public int deleteAll() {
+    public int deleteAll() throws SQLException {
         String sql = "DELETE FROM `customer`";
         try (Connection conn = DriverManager.getConnection(this.url, this.user, this.password);
                 PreparedStatement pstmt = conn.prepareStatement(sql))
@@ -221,8 +228,9 @@ public class CustomerRepository {
             return rowsDeleted;
         }
         catch (SQLException ex) {
-            System.out.println(ex.getMessage());
-            return -1;
+            System.out.println("Aletta: " + ex.getMessage());
+            throw ex;
+            //return -1;
         }
     }
     

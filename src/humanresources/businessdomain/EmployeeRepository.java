@@ -20,7 +20,7 @@ public class EmployeeRepository {
 
     public EmployeeRepository() {}
     
-    public Employee get(int eid) {
+    public Employee get(int eid) throws SQLException {
         String sql = "SELECT `Id`, `FirstName`, `LastName`, `Position` " + 
                     "FROM `employee` " + 
                     "WHERE `Id` = " + eid;
@@ -38,12 +38,13 @@ public class EmployeeRepository {
             
         }
          catch (SQLException ex) {
-            System.out.println("First: " + ex.toString());
+            System.out.println("Aletta: " + ex.toString());
+            throw ex;
         }
         return empy;
     }
     
-    public ArrayList<Employee> all() {
+    public ArrayList<Employee> all() throws SQLException {
         String sql = "SELECT `Id`, `FirstName`, `LastName`, `Position` FROM `employee`";
         ArrayList<Employee> employees = new ArrayList<Employee>();
         
@@ -60,13 +61,14 @@ public class EmployeeRepository {
                 employees.add(e);
             }
         } catch (SQLException ex) {
-            System.out.println("First: " + ex.toString());
+            System.out.println("Aletta: " + ex.toString());
+            throw ex;
         }
 
         return employees;
     }
 
-    public ArrayList<Employee> getByPosition(PositionType p) {
+    public ArrayList<Employee> getByPosition(PositionType p) throws SQLException {
         String sql = "SELECT `Id`, `FirstName`, `LastName`, `Position` " + 
                     "FROM `employee` " + 
                     "WHERE `Position` = '" + p.getDisplayName() + "'";
@@ -84,13 +86,14 @@ public class EmployeeRepository {
                 employees.add(e);
             }
         } catch (SQLException ex) {
-            System.out.println("First: " + ex.toString());
+            System.out.println("Aletta: " + ex.toString());
+            throw ex;
         }
 
         return employees;
     }
     
-    public boolean update(Employee empy) {
+    public boolean update(Employee empy) throws SQLException {
         String sql = "UPDATE `employee` "
                 + "SET `FirstName` = ?, "
                  + "`LastName` = ? "
@@ -104,7 +107,7 @@ public class EmployeeRepository {
             pstmt.setInt(3, empy.getEid());
             
             int rowAffected = pstmt.executeUpdate();
-            System.out.println(String.format("Row updated %d", rowAffected));
+            //System.out.println(String.format("Row updated %d", rowAffected));
             if (rowAffected > 0) {
                 return true;
             }
@@ -113,12 +116,12 @@ public class EmployeeRepository {
             }
         }
         catch (SQLException ex) {
-            System.out.println(ex.getMessage());
-            return false;
+            System.out.println("Aletta: " + ex.getMessage());
+            throw ex;
         }
     }
     
-    public int add(Employee empy) {
+    public int add(Employee empy) throws SQLException {
         String sql = "INSERT INTO `employee`(`FirstName`, `LastName`, `Position`) "
             + "VALUES(?,?,?)";
         
@@ -131,19 +134,17 @@ public class EmployeeRepository {
             pstmt.setString(1, empy.getFname());
             pstmt.setString(2, empy.getLname());
             pstmt.setString(3, empy.getPosition().getDisplayName());
-            
             int rowAffected = pstmt.executeUpdate();
-            
             if (rowAffected == 1) {
                 rs = pstmt.getGeneratedKeys();
                 if (rs.next()) {
                     candidateId = rs.getInt(1);
                 }
             }
-                
         }
         catch (SQLException ex) {
-            System.out.println(ex.getMessage());
+            System.out.println("Aletta: " + ex.getMessage());
+            throw ex;
         } 
         finally {
             try {
@@ -152,19 +153,23 @@ public class EmployeeRepository {
                 }
             } 
             catch (SQLException ex) {
-                System.out.println(ex.getMessage());
-                return candidateId;
+                System.out.println("Aletta: " + ex.getMessage());
+                throw ex;
             }
         }
         
         return candidateId;
     }
     
-    public boolean delete(int eid) {
+    public boolean delete(int eid) throws SQLException {
         String sql = "DELETE FROM `employee` WHERE `Id` = ?";
-        
-        int res = this.custRepty.deleteByEmployeeId(eid);   // TODO: how to simulate that when mocking up
-        
+        int res = -1;
+        try {
+            res = this.custRepty.deleteByEmployeeId(eid);   // TODO: how to simulate that when mocking up
+        }
+        catch (SQLException ex) {
+            throw ex;
+        }
         if (res > -1) {
             try (Connection conn = DriverManager.getConnection(this.url, this.user, this.password);
                 PreparedStatement pstmt = conn.prepareStatement(sql))
@@ -179,8 +184,9 @@ public class EmployeeRepository {
                 }
             }
             catch (SQLException ex) {
-                System.out.println(ex.getMessage());
-                return false;
+                System.out.println("Aletta" + ex.getMessage());
+                throw ex;
+                //return false;
             }
         }
         else {
@@ -188,10 +194,19 @@ public class EmployeeRepository {
         }
     }
     
-    public int deleteAll() {
+    public int deleteAll() throws SQLException {
         String sql = "DELETE FROM `employee`";
         
-        int res = this.custRepty.deleteAll();
+        int res = -1;
+        
+        try {
+            res = this.custRepty.deleteAll();
+        }
+        catch (SQLException ex) {
+            System.out.println("Aletta: " + ex.getMessage());
+            throw ex;
+            //return false;
+        }
         
         if (res > -1) {
             try (Connection conn = DriverManager.getConnection(this.url, this.user, this.password);
@@ -201,8 +216,9 @@ public class EmployeeRepository {
                 return rowsDeleted;
             }
             catch (SQLException ex) {
-                System.out.println(ex.getMessage());
-                return -1;
+                System.out.println("Aletta: " + ex.getMessage());
+                throw ex;
+                //return -1;
             }
         }
         else {

@@ -11,6 +11,7 @@ import java.util.regex.*;
 import java.awt.*;
 import javax.swing.*;
 import java.awt.event.*;
+import java.sql.SQLException;
 import humanresources.businessdomain.*;
 import humanresources.viewmodels.*;
 
@@ -24,8 +25,8 @@ public class CustomerListPanel extends JPanel implements ActionListener {
     private CustomerFactory custFacty = new CustomerFactory();
     private CustomerRepository custReposty = new CustomerRepository();
     private EmployeeRepository empyReposty = new EmployeeRepository();
-    private ArrayList<Customer> custList;
-    private ArrayList<Employee> empyList;
+    private ArrayList<Customer> custList = new ArrayList<Customer>();
+    private ArrayList<Employee> empyList = new ArrayList<Employee>();
     private String state = "ALL"; // ALL || AGENT
     private int rowInd = -1;
     private Employee empy = null;
@@ -51,7 +52,7 @@ public class CustomerListPanel extends JPanel implements ActionListener {
     private Object[] customerEditCtrls = null;
     
     
-    public CustomerListPanel(String state, int empyId, EmployeeRepository er, CustomerRepository cr) {  // TODO: have to refactor it for testing DI?
+    public CustomerListPanel(String state, int empyId, EmployeeRepository er, CustomerRepository cr) throws SQLException {  // TODO: have to refactor it for testing DI?
         String title = "";
         this.state = state;
         this.empyReposty = er;
@@ -80,7 +81,6 @@ public class CustomerListPanel extends JPanel implements ActionListener {
                 title = "'s Customers";
                 if (empyId > 0) {
                     this.custList = this.custReposty.getByEmployeeId(empyId);
-                    
                     this.empy = this.empyReposty.get(empyId);
                     
                     if (null != this.empy) {
@@ -188,11 +188,20 @@ public class CustomerListPanel extends JPanel implements ActionListener {
                             ((VinComboItem)this.managerCombox.getSelectedItem()).getLabel(), 
                             PaymentMethodOption.fromString(this.payMethdCombox.getSelectedItem().toString())
                         );
-                    int generatedId = this.custReposty.add(tempCust);
-                    if (generatedId > 0) {
-                        tempCust.setCid(generatedId);
-                        this.custList.add(tempCust);
-                        this.customerModel.addRow(tempCust);
+                    
+                    try {
+                        int generatedId = this.custReposty.add(tempCust);
+                        if (generatedId > 0) {
+                            tempCust.setCid(generatedId);
+                            this.custList.add(tempCust);
+                            this.customerModel.addRow(tempCust);
+                        }
+                    }
+                    catch (SQLException ex) {
+                        this.showErrorMessage("Database error, try again later.");
+                    }
+                    finally {
+                        resetCustEditCtrls();
                     }
                 }
                 else {
@@ -227,8 +236,18 @@ public class CustomerListPanel extends JPanel implements ActionListener {
                 if (option == JOptionPane.OK_OPTION) {
                     if (this.validateCustomerForm()) {
                         c.setCname(this.custNameTxtFld.getText());
-                        if (this.custReposty.update(c)) {
-                            this.customerModel.setValueAt(this.custNameTxtFld.getText(), this.rowInd, 1);
+                        
+                        try {
+                            if (this.custReposty.update(c)) {
+                                this.customerModel.setValueAt(this.custNameTxtFld.getText(), this.rowInd, 1);
+                            }
+                        }
+                        catch (SQLException ex) {
+                            this.showErrorMessage("Database error, try again later.");
+                        }
+                        finally {
+                            this.rowInd = -1;
+                            resetCustEditCtrls();
                         }
                     }
                     else {
@@ -245,12 +264,20 @@ public class CustomerListPanel extends JPanel implements ActionListener {
             this.rowInd = this.customerGrid.getSelectedRow();
             if (this.rowInd > -1) {
                 Customer cust = this.custList.get(this.rowInd);
-                if (this.custReposty.delete(cust.getCid())) {
-                    this.custList.remove(this.rowInd);
-                    this.customerModel.removeRow(this.rowInd);
-                    //this.showMessageBox(cust.getCname() + " is deleted.");
+                
+                try {
+                    if (this.custReposty.delete(cust.getCid())) {
+                        this.custList.remove(this.rowInd);
+                        this.customerModel.removeRow(this.rowInd);
+                        //this.showMessageBox(cust.getCname() + " is deleted.");
+                    }
                 }
-                this.rowInd = -1;
+                catch (SQLException ex) {
+                    this.showErrorMessage("Database error, try again later.");
+                }
+                finally {
+                    this.rowInd = -1;
+                }
             }
         }
     }
